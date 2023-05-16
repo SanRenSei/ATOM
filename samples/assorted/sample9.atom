@@ -1,0 +1,2 @@
+lib = @samples/stdlib/stdlib.atom;
+["A","B","C"] INTO lib."join"

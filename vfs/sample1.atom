@@ -1,0 +1,6 @@
+$render = {$c.button};
+$c.button = {
+  {
+    "Click Me",
+  } INTO $html.button
+}

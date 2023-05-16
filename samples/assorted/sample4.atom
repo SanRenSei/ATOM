@@ -1,0 +1,12 @@
+arr = [3, 4, 2, 1];
+1~2 FOREACH (arr iFOREACH (arr.* INTO {
+  *>0 & *<=arr.length:
+    temp = *;
+    arr.$1 = arr.(*-1);
+    arr.(*-1) = temp
+}));
+pos = (arr iWHERE (*+1 != arr.*));
+pos.length INTO {
+  *>0 : pos.0+1,
+  arr.length+1
+}

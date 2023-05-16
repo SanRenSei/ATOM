@@ -1,0 +1,14 @@
+
+body {
+  margin: 0px;
+  font-family: monospace;
+}
+
+tt {
+  display: inline-block;
+}
+
+.text-input {
+  border: 0px;
+  z-index : -1;
+}

@@ -1,0 +1,4 @@
+arr = 1~5;
+product = 1;
+arr ∀ (product = product * *);
+arr MAP (product/*)

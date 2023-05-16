@@ -1,0 +1,15 @@
+join = {
+  return = "";
+  *:
+    * FOREACH return = return + *;
+    return
+};
+
+printStars = {
+  PRINT ((1~* MAP "*") INTO join)
+};
+
+5 THROUGH {
+  * INTO printStars;
+  *-1
+}

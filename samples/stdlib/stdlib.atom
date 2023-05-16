@@ -1,0 +1,14 @@
+{
+  "join" : {
+    return = "";
+    *:
+      * FOREACH return = return + *;
+      return
+  },
+  "sum" : {
+    return = 0;
+    *:
+      * FOREACH return += *;
+      return
+  }
+}

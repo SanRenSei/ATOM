@@ -1,0 +1,12 @@
+x = [1,2,3,3,3,5];
+m=0;
+a=[];
+x∀m><=a.*+=*;
+m
+
+
+# At parsing time, ∀ will implicitly put m><=a.*+=* into its own scope
+# a.* is the first thing to be excuted, returning an ATOMValueDynamic
+# Following the right to left order, += is the next evaluation, in a.*+=*
+# Lastly, ><= gets evaluated to wrap up the scope
+

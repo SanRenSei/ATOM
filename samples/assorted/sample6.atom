@@ -1,0 +1,8 @@
+join = {
+  return = "";
+  *:
+    * FOREACH return = return + *;
+    return
+};
+
+["a","b","c"] INTO join

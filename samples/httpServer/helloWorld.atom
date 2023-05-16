@@ -1,0 +1,19 @@
+$httpServer UNPACK {get, post};
+$fs UNPACK write;
+
+{
+  "/" : "Hello World",
+  "/index.html" : "vfs/index.html" INTO $fs,
+  "/vfs/" : {
+    * UNPACK path;
+    !path : "Error, need to specify path",
+    fileUrl = "vfs/" + path;
+    ~get : fileUrl INTO $fs,
+    * UNPACK body;
+    ~post : {
+      "path" : fileUrl,
+      "content" : body
+    } INTO write; "OK",
+    "Unsupported http action"
+  }
+} INTO $httpServer
