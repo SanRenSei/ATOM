@@ -17,6 +17,22 @@ public class OperatorTests {
     }
 
     @Test
+    public void arrayAdditionTest() {
+        assertTrue(ATOMValue.listEquals(ATOMRuntime.processInput("a = [3,1,4];a+1").getArrVal().toList(), Arrays.asList(
+                new ATOMValue(3),
+                new ATOMValue(1),
+                new ATOMValue(4),
+                new ATOMValue(1)
+        )));
+        assertTrue(ATOMValue.listEquals(ATOMRuntime.processInput("a = [3,1,4];a+=1").getArrVal().toList(), Arrays.asList(
+                new ATOMValue(3),
+                new ATOMValue(1),
+                new ATOMValue(4),
+                new ATOMValue(1)
+        )));
+    }
+
+    @Test
     public void subtractionTest() {
         assertEquals(ATOMRuntime.processInput("5-2").compute().getIntVal(), 3);
     }
@@ -69,6 +85,7 @@ public class OperatorTests {
     @Test
     public void dereferenceArrayTest() {
         assertEquals(ATOMRuntime.processInput("[3,1,4,1,5].2").compute().getIntVal(), 4);
+        assertEquals(ATOMRuntime.processInput("[3,1,4,1,5].-1").compute().getIntVal(), 5);
     }
 
     @Test

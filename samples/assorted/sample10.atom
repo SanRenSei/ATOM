@@ -2,5 +2,6 @@
 
 s="the quick brown fox jumps over the lazy dog";
 k=10;
-s/" "∀{n=a.-1+" "+;🧵✂n>k:a+=,a.-1=✂n};
+a=[];
+s/" "∀{n=a.-1+" "+*;🧵✂n>k:a+=*,a.-1=✂n};
 a

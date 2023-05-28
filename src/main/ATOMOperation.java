@@ -53,6 +53,25 @@ public class ATOMOperation extends ATOMElement {
         throw new ATOMOperationException(".", left, right);
     });
 
+    public static ATOMOperation DEREFERENCE_NEGATIVE = new ATOMOperation(Collections.singletonList(".-"), ORDER_DEREF, (left, right) -> {
+        ATOMValue rightVal = right.eval();
+        if (rightVal.getType() != ATOMValueType.INT) {
+            throw new ATOMOperationException(".-", left, right);
+        }
+
+        if (left instanceof ATOMValueDynamic) {
+            return ((ATOMValueDynamic)left).generateChild(new ATOMValue(-rightVal.getIntVal()));
+        }
+
+        ATOMValue leftVal = left.eval();
+
+        if (leftVal.getType()==ATOMValueType.ARRAY && rightVal.getType()==ATOMValueType.INT) {
+            int index = leftVal.getArrVal().size()-rightVal.getIntVal();
+            return leftVal.getArrVal().get(index).eval();
+        }
+        throw new ATOMOperationException(".-", left, right);
+    });
+
     public static ATOMOperation GET_LENGTH = new ATOMOperation(Collections.singletonList("\uD83E\uDDF5"), ORDER_UNARY, (left, right) -> {
         ATOMValue rightVal = right.eval();
         if (left == null && rightVal.getType() == ATOMValueType.STRING) {
@@ -154,6 +173,10 @@ public class ATOMOperation extends ATOMElement {
         }
         if (leftVal.getType() == ATOMValueType.STRING && rightVal.getType() == ATOMValueType.STRING) {
             return new ATOMValue(leftVal.getStrVal() + rightVal.getStrVal());
+        }
+        if (leftVal.getType() == ATOMValueType.ARRAY) {
+            leftVal.getArrVal().add(rightVal);
+            return leftVal;
         }
         throw new ATOMOperationException("+", left, right);
     });
@@ -509,6 +532,7 @@ public class ATOMOperation extends ATOMElement {
             MAXIMUM, // ><
             MINIMUM, // <>
             ARR_GEN, // ~
+            DEREFERENCE_NEGATIVE, // .-
             DEREFERENCE, // .
             LESSTHANOREQUAL, // <=
             LESSTHAN, // <

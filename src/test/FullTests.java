@@ -106,5 +106,13 @@ public class FullTests {
         assertEquals(ATOMRuntime.processFile(new File("samples/assorted/sample9.atom")).getStrVal(), "ABC");
     }
 
+    @Test
+    public void test10() throws Exception {
+        ATOMTemplate atom = new ATOMTemplate();
+        atom.importFile(new File("samples/assorted/sample10.atom"));
+        ATOMScope program = (ATOMScope) ATOMElement.fromTemplate(atom);
+        System.out.println(program.compute());
+        //assertEquals(program.compute().getStrVal(), "abc");
+    }
 
 }

@@ -79,7 +79,9 @@ public class ATOMExpression extends ATOMElement {
                     if (nextOperationIndex==-1) {
                         nextOperationIndex = i;
                     }
-                    if (((ATOMOperation) copyOfChildren.get(i)).order < ((ATOMOperation) copyOfChildren.get(nextOperationIndex)).order) {
+                    if (((ATOMOperation) copyOfChildren.get(i)).order < ((ATOMOperation) copyOfChildren.get(nextOperationIndex)).order
+                      || ((ATOMOperation) copyOfChildren.get(i)).order == ((ATOMOperation) copyOfChildren.get(nextOperationIndex)).order
+                      && ((ATOMOperation) copyOfChildren.get(i)).order == ATOMOperation.ORDER_UNARY) {
                         nextOperationIndex = i;
                     }
                     // 100+ indicates a right to left order of operations

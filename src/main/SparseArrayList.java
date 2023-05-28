@@ -25,7 +25,10 @@ public class SparseArrayList<T> {
     }
 
     public T get(int index) {
-        if (index < listHead.size()) {
+        if (index<0) {
+            index = size()+index;
+        }
+        if (index < listHead.size() && index>=0) {
             return listHead.get(index);
         }
         if (listTail.containsKey(index)) {
@@ -35,6 +38,12 @@ public class SparseArrayList<T> {
     }
 
     public T set(int index, T value) {
+        if (index<0) {
+            index = size()+index;
+        }
+        if (size()==0 && index==-1) {
+            index = 0;
+        }
         if (index > listHead.size()) {
             listTail.put(index, value);
         } else if (listHead.size() == index) {
