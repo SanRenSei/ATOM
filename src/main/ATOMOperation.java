@@ -5,22 +5,24 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
 public class ATOMOperation extends ATOMElement {
 
     public static int ORDER_DEREF = 1;
-    public static int ORDER_ARRGEN = 2;
-    public static int ORDER_MULT = 3;
-    public static int ORDER_ADD = 4;
-    public static int ORDER_MINMAX = 5;
-    public static int ORDER_COMPARE = 6;
-    public static int ORDER_AND = 7;
-    public static int ORDER_INJECT = 8;
-    public static int ORDER_ASSIGNMENT = 9;
-    public static int ORDER_SEP = 10;
-    public static int ORDER_PRINT = 11;
-    public static int ORDER_ARRIN = 12;
-    public static int ORDER_FUNC = 13;
+    public static int ORDER_UNARY = ORDER_DEREF+1;
+    public static int ORDER_ARRGEN = ORDER_UNARY+1;
+    public static int ORDER_MULT = ORDER_ARRGEN+1;
+    public static int ORDER_ADD = ORDER_MULT+1;
+    public static int ORDER_MINMAX = ORDER_ADD+1;
+    public static int ORDER_COMPARE = ORDER_MINMAX+1;
+    public static int ORDER_AND = ORDER_COMPARE+1;
+    public static int ORDER_INJECT = ORDER_AND+1;
+    public static int ORDER_ASSIGNMENT = ORDER_INJECT+1;
+    public static int ORDER_SEP = ORDER_ASSIGNMENT+1;
+    public static int ORDER_PRINT = ORDER_SEP+1;
+    public static int ORDER_ARRIN = ORDER_PRINT+1;
+    public static int ORDER_FUNC = ORDER_ARRIN+1;
     public static int ORDER_OPASSIGN = 100;
 
     public static ATOMOperation DEREFERENCE = new ATOMOperation(Collections.singletonList("."), ORDER_DEREF, (left, right) -> {
@@ -49,6 +51,25 @@ public class ATOMOperation extends ATOMElement {
             return leftVal.getObjVal().dereference(rightVal);
         }
         throw new ATOMOperationException(".", left, right);
+    });
+
+    public static ATOMOperation GET_LENGTH = new ATOMOperation(Collections.singletonList("\uD83E\uDDF5"), ORDER_UNARY, (left, right) -> {
+        ATOMValue rightVal = right.eval();
+        if (left == null && rightVal.getType() == ATOMValueType.STRING) {
+            return new ATOMValue(rightVal.getStrVal().length());
+        }
+        if (left == null && rightVal.getType() == ATOMValueType.ARRAY) {
+            return new ATOMValue(rightVal.getArrVal().size());
+        }
+        throw new ATOMOperationException("\uD83E\uDDF5", left, right);
+    });
+
+    public static ATOMOperation STR_TRIM = new ATOMOperation(Collections.singletonList("✂"), ORDER_UNARY, (left, right) -> {
+        ATOMValue rightVal = right.eval();
+        if (left == null && rightVal.getType() == ATOMValueType.STRING) {
+            return new ATOMValue(rightVal.getStrVal().trim());
+        }
+        throw new ATOMOperationException("✂", left, right);
     });
 
     public static ATOMOperation ARR_GEN = new ATOMOperation(Collections.singletonList("~"), ORDER_ARRGEN, (left, right) -> {
@@ -85,6 +106,10 @@ public class ATOMOperation extends ATOMElement {
         ATOMValue rightVal = right.eval();
         if (leftVal.getType() == ATOMValueType.INT && rightVal.getType() == ATOMValueType.INT) {
             return new ATOMValue(leftVal.getIntVal() / rightVal.getIntVal());
+        }
+        if (leftVal.getType() == ATOMValueType.STRING && rightVal.getType() == ATOMValueType.STRING) {
+            List<ATOMValue> splitStr = Arrays.stream(leftVal.getStrVal().split(rightVal.getStrVal())).map(ATOMValue::new).collect(Collectors.toList());
+            return new ATOMValue(splitStr);
         }
         throw new ATOMOperationException("/", left, right);
     });
@@ -475,7 +500,9 @@ public class ATOMOperation extends ATOMElement {
             IWHERE, // iWHERE i🔍
             IN, // IN 🏠
             THROUGH, // THROUGH 🕳️
-            UNPACK // UNPACK 🎒
+            UNPACK, // UNPACK 🎒
+            GET_LENGTH, // 🧵
+            STR_TRIM, // ✂
     };
 
     List<String> commands;

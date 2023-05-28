@@ -32,6 +32,30 @@ public class OperatorTests {
     }
 
     @Test
+    public void stringSplitTest() {
+        assertTrue(ATOMValue.listEquals(ATOMRuntime.processInput("\"a b c\"/\" \"").getArrVal().toList(), Arrays.asList(
+                new ATOMValue("a"),
+                new ATOMValue("b"),
+                new ATOMValue("c")
+        )));
+    }
+
+    @Test
+    public void stringLength() {
+        assertEquals(ATOMRuntime.processInput("\uD83E\uDDF5\"foo\"").compute().getIntVal(), 3);
+    }
+
+    @Test
+    public void arrayLength() {
+        assertEquals(ATOMRuntime.processInput("\uD83E\uDDF5[3,1,4]").compute().getIntVal(), 3);
+    }
+
+    @Test
+    public void stringTrim() {
+        assertEquals(ATOMRuntime.processInput("✂\"  foo \"").compute().getStrVal(), "foo");
+    }
+
+    @Test
     public void moduloTest() {
         assertEquals(ATOMRuntime.processInput("7%2").compute().getIntVal(), 1);
     }
