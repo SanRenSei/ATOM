@@ -96,6 +96,12 @@ public class ATOMOperation extends ATOMElement {
     public static ATOMOperation MULTIPLY = new ATOMOperation(Collections.singletonList("*"), ORDER_MULT, (left, right) -> {
         ATOMValue leftVal = left.eval();
         ATOMValue rightVal = right.eval();
+        if (leftVal.getType() == ATOMValueType.NULL && rightVal.getType() == ATOMValueType.INT) {
+            return new ATOMValue(0);
+        }
+        if (leftVal.getType() == ATOMValueType.INT && rightVal.getType() == ATOMValueType.NULL) {
+            return new ATOMValue(0);
+        }
         if (leftVal.getType() == ATOMValueType.INT && rightVal.getType() == ATOMValueType.INT) {
             return new ATOMValue(leftVal.getIntVal() * rightVal.getIntVal());
         }
@@ -104,6 +110,12 @@ public class ATOMOperation extends ATOMElement {
     public static ATOMOperation DIVISION = new ATOMOperation(Collections.singletonList("/"), ORDER_MULT, (left, right) -> {
         ATOMValue leftVal = left.eval();
         ATOMValue rightVal = right.eval();
+        if (leftVal.getType() == ATOMValueType.NULL && rightVal.getType() == ATOMValueType.INT) {
+            return new ATOMValue(0);
+        }
+        if (leftVal.getType() == ATOMValueType.INT && rightVal.getType() == ATOMValueType.NULL) {
+            return new ATOMValue(1/0);
+        }
         if (leftVal.getType() == ATOMValueType.INT && rightVal.getType() == ATOMValueType.INT) {
             return new ATOMValue(leftVal.getIntVal() / rightVal.getIntVal());
         }
@@ -128,6 +140,15 @@ public class ATOMOperation extends ATOMElement {
         if (leftVal.getType() == ATOMValueType.NULL && rightVal.getType() == ATOMValueType.INT) {
             return new ATOMValue(rightVal.getIntVal());
         }
+        if (leftVal.getType() == ATOMValueType.INT && rightVal.getType() == ATOMValueType.NULL) {
+            return new ATOMValue(leftVal.getIntVal());
+        }
+        if (leftVal.getType() == ATOMValueType.NULL && rightVal.getType() == ATOMValueType.STRING) {
+            return new ATOMValue(rightVal.getStrVal());
+        }
+        if (leftVal.getType() == ATOMValueType.STRING && rightVal.getType() == ATOMValueType.NULL) {
+            return new ATOMValue(leftVal.getStrVal());
+        }
         if (leftVal.getType() == ATOMValueType.INT && rightVal.getType() == ATOMValueType.INT) {
             return new ATOMValue(leftVal.getIntVal() + rightVal.getIntVal());
         }
@@ -145,6 +166,12 @@ public class ATOMOperation extends ATOMElement {
             throw new ATOMOperationException("-", left, right);
         }
         ATOMValue leftVal = left.eval();
+        if (leftVal.getType() == ATOMValueType.NULL && rightVal.getType() == ATOMValueType.INT) {
+            return new ATOMValue(-rightVal.getIntVal());
+        }
+        if (leftVal.getType() == ATOMValueType.INT && rightVal.getType() == ATOMValueType.NULL) {
+            return new ATOMValue(leftVal.getIntVal());
+        }
         if (leftVal.getType() == ATOMValueType.INT && rightVal.getType() == ATOMValueType.INT) {
             return new ATOMValue(leftVal.getIntVal() - rightVal.getIntVal());
         }

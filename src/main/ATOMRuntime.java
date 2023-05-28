@@ -26,7 +26,7 @@ public class ATOMRuntime {
     }
 
     public static ATOMValue processInput(String input) {
-        return ATOMElement.fromTemplate(new ATOMTemplate(input)).compute();
+        return ATOMElement.fromTemplate(new ATOMTemplate(input)).eval();
     }
 
     // BUNDLER: BEGIN IGNORE

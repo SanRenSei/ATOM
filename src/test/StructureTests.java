@@ -25,7 +25,7 @@ public class StructureTests {
 
     @Test
     public void declareEmptyControllerTest() {
-        assertNull(ATOMRuntime.processInput("{}"));
+        assertNull(ATOMRuntime.processInput("{}").compute());
     }
 
     @Test
