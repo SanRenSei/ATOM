@@ -111,8 +111,14 @@ public class FullTests {
         ATOMTemplate atom = new ATOMTemplate();
         atom.importFile(new File("samples/assorted/sample10.atom"));
         ATOMScope program = (ATOMScope) ATOMElement.fromTemplate(atom);
-        System.out.println(program.compute());
-        //assertEquals(program.compute().getStrVal(), "abc");
+        assertTrue(ATOMValue.listEquals(program.compute().getArrVal().toList(),
+                Arrays.asList(
+                        new ATOMValue("the quick"),
+                        new ATOMValue("brown fox"),
+                        new ATOMValue("jumps over"),
+                        new ATOMValue("the lazy"),
+                        new ATOMValue("dog")
+                )));
     }
 
 }
