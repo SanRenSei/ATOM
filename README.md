@@ -35,3 +35,4 @@ Years later, our resilient engineer, armed with newfound wisdom, decided to lear
 ## Links
 
 - [Assorted Code Samples](https://github.com/SanRenSei/ATOM/tree/main/samples/assorted)
+- [Information on Operations](https://github.com/SanRenSei/ATOM/blob/main/docs/Operations.md)
