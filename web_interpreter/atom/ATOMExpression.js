@@ -46,7 +46,7 @@ export default class ATOMExpression {
         let subExpression = new ATOMExpression(implicitScope);
         subExpression.parent = subScope;
         subScope.components.push(subExpression);
-        this.children.add(subScope);
+        this.children.push(subScope);
         return;
       }
     }

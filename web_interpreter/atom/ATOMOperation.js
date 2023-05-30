@@ -323,7 +323,7 @@ export default class ATOMOperation {
     static P_SEPERATOR = new ATOMOperation([':'], ATOMOperation.ORDER_SEP, null);
     static END_STATEMENT = new ATOMOperation([';'], ATOMOperation.ORDER_SEP, null);
 
-    static PRINT = new ATOMOperation(['PRINT','🖨'], ATOMOperation.ORDER_PRINT, (left, right) => {
+    static PRINT = new ATOMOperation(['PRINT','🖨'], ATOMOperation.ORDER_UNARY, (left, right) => {
       let rightVal = right.eval();
       console.log(rightVal.getType()=='STRING'?rightVal.strVal:rightVal.toString());
       return rightVal;

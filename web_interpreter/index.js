@@ -11,5 +11,6 @@ runButton.onclick = () => {
   console.log = (str) => {
     outputConsole.innerHTML = outputConsole.innerHTML + '\n' + str;
   }
+  outputConsole.innerHTML = '';
   console.log(ATOMRuntime.processInput(inputProgram.value).toString());
 }

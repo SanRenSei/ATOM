@@ -10,7 +10,11 @@ To emphasize its modernity, ATOM wholeheartedly embraces the contemporary keyboa
 
 ## Usage
 
-Presently, ATOM operates through a java interpreter. Executing a script is a breeze – just sprinkle the following line of code anywhere in your project:
+The easiest way to run ATOM code is through the web interpreter. Just go here, type your code, and run it! There may be some bugs, it is still a work in progress.
+
+[Online Interpreter - WORK IN PROGRESS](https://sanrensei.github.io/ATOM/)
+
+To run it offline, ATOM mainly uses a java interpreter. Pull the code, open the java project, and add the following line of code anywhere in your project:
 
 ```
 ATOMRuntime.processInput("1+1");
@@ -36,3 +40,4 @@ Years later, our resilient engineer, armed with newfound wisdom, decided to lear
 
 - [Assorted Code Samples](https://github.com/SanRenSei/ATOM/tree/main/samples/assorted)
 - [Information on Operations](https://github.com/SanRenSei/ATOM/blob/main/docs/Operations.md)
+- [Online Interpreter - WORK IN PROGRESS](https://sanrensei.github.io/ATOM/)
