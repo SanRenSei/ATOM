@@ -582,7 +582,7 @@ public class ATOMOperation extends ATOMElement {
             WHERE, // WHERE 🔍
             IWHERE, // iWHERE i🔍
             IN, // IN 🏠
-            NOTIN, // NOTIN NIN 🏕️
+            NOTIN, // NOTIN NIN 🏕
             THROUGH, // THROUGH 🕳️
             UNPACK, // UNPACK 🎒
             GET_LENGTH, // 🧵

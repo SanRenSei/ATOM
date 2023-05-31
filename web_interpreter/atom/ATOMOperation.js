@@ -358,7 +358,7 @@ export default class ATOMOperation {
       throw left + 'IN' + right;
     });
 
-    static NOTIN = new ATOMOperation(['NOTIN', 'NIN', '🏕️'], ATOMOperation.ORDER_ARRIN, (left, right) => {
+    static NOTIN = new ATOMOperation(['NOTIN', 'NIN', '🏕'], ATOMOperation.ORDER_ARRIN, (left, right) => {
       let leftVal = left.eval(), rightVal = right.eval();
       if (rightVal.getType() == 'ARRAY') {
         for (let i=0;i<rightVal.arrVal.length;i++) {
@@ -560,7 +560,7 @@ export default class ATOMOperation {
       ATOMOperation.WHERE, // WHERE 🔍
       ATOMOperation.IWHERE, // iWHERE i🔍
       ATOMOperation.IN, // IN 🏠
-      ATOMOperation.NOTIN, // NOTIN NIN 🏕️
+      ATOMOperation.NOTIN, // NOTIN NIN 🏕
       ATOMOperation.THROUGH, // THROUGH 🕳️
       ATOMOperation.UNPACK, // UNPACK 🎒
       ATOMOperation.GET_LENGTH, // 🧵
