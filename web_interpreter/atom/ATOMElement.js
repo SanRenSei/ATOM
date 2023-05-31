@@ -58,7 +58,7 @@ export default class ATOMElement {
     if (this.isAlphabet(c)) {
       let startIndex = atomTemplate.currentIndex;
       let endIndex = atomTemplate.currentIndex;
-      while (isAlphabet(atomTemplate.source[endIndex])) {
+      while (this.isAlphabet(atomTemplate.source[endIndex])) {
         endIndex++;
       }
       atomTemplate.currentIndex = endIndex;

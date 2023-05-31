@@ -1,0 +1,38 @@
+#https://codegolf.stackexchange.com/questions/261433/adjacent-items-sorting
+
+input=[[1], [0,2,3], [3,1], [1,2,3]];
+visited=[];
+path=[];
+# Create a path of indices that hits each at least once
+# Depth first traversal
+visit = {
+  visited+*; # Add the index to the list of visited indices
+  path+*; # Add the index to the path
+  # Look at each connected index and check if its already visited
+  input.* FOREACH {
+    * NOTIN visited:
+      * INTO visit;
+      path+$1; # Return to the original index at the end
+  }
+};
+0 INTO visit;
+🖨"Path";
+🖨path;
+
+# Create a function that takes an index and generates a proper neighbor sequence
+neighbors = {
+  arr = [*];
+  input.* FOREACH {
+    arr + *;
+    arr + $1;
+  };
+  arr
+};
+
+# Map the path into neighbor sequences
+result = (path MAP neighbors);
+🖨"Preflattened Result";
+🖨result;
+
+# Flatten it and return
+🦶 result

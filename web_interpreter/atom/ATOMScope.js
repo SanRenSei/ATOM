@@ -56,16 +56,16 @@ export default class ATOMScope {
       }
       if (this.type == 'OBJECT') {
         if (elem == ATOMOperation.END_STATEMENT) {
-          branches[branches.length-1][predicateCommandFlag].push(latestExpression);
+          this.branches[this.branches.length-1][predicateCommandFlag].push(latestExpression);
           latestExpression = new ATOMExpression();
           latestExpression.parent = this;
         } else if (elem == ATOMOperation.P_SEPERATOR) {
-          branches[branches.length-1][predicateCommandFlag].push(latestExpression);
+          this.branches[this.branches.length-1][predicateCommandFlag].push(latestExpression);
           latestExpression = new ATOMExpression();
           latestExpression.parent = this;
           predicateCommandFlag = 1;
         } else if (elem == ATOMOperation.S_SEPERATOR) {
-          branches[branches.length-1][predicateCommandFlag].push(latestExpression);
+          this.branches[this.branches.length-1][predicateCommandFlag].push(latestExpression);
           latestExpression = new ATOMExpression();
           latestExpression.parent = this;
           predicateCommandFlag = 0;
@@ -119,6 +119,9 @@ export default class ATOMScope {
       if (this.components.length==0) {
         return ATOMValue.NULL();
       }
+      if (this.components.length==1) {
+        return this.components[0].eval().compute();
+      }
       for (let i=0;i<this.components.length-1;i++) {
         this.components[i].eval();
       }
@@ -126,7 +129,7 @@ export default class ATOMScope {
     }
     if (this.type=='ARRAY') {
       let values = [];
-      for (let i=0;i<this.components.length-1;i++) {
+      for (let i=0;i<this.components.length;i++) {
         values.push(this.components[i].eval());
       }
       return new ATOMValue(values);

@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class ATOMOperation extends ATOMElement {
@@ -89,6 +91,22 @@ public class ATOMOperation extends ATOMElement {
             return new ATOMValue(rightVal.getStrVal().trim());
         }
         throw new ATOMOperationException("✂", left, right);
+    });
+
+    public static ATOMOperation ARR_FLATTEN = new ATOMOperation(Collections.singletonList("\uD83E\uDDB6"), ORDER_UNARY, (left, right) -> {
+        ATOMValue rightVal = right.eval();
+        if (left == null && rightVal.getType() == ATOMValueType.ARRAY) {
+            List<ATOMValue> flattened = new ArrayList<>();
+            rightVal.getArrVal().forEach(val -> {
+                if (val.getType() == ATOMValueType.ARRAY) {
+                    val.getArrVal().forEach((Consumer<? super ATOMValue>) flattened::add);
+                } else {
+                    flattened.add(val);
+                }
+            });
+            return new ATOMValue(flattened);
+        }
+        throw new ATOMOperationException("\uD83E\uDDB6", left, right);
     });
 
     public static ATOMOperation ARR_GEN = new ATOMOperation(Collections.singletonList("~"), ORDER_ARRGEN, (left, right) -> {
@@ -354,7 +372,7 @@ public class ATOMOperation extends ATOMElement {
         return rightVal;
     });
 
-    public static ATOMOperation IN = new ATOMOperation(Collections.singletonList("IN"), ORDER_ARRIN, (left, right) -> {
+    public static ATOMOperation IN = new ATOMOperation(Arrays.asList("IN", "\uD83C\uDFE0"), ORDER_ARRIN, (left, right) -> {
         ATOMValue leftVal = left.eval();
         ATOMValue rightVal = right.eval();
         if (rightVal.getType() == ATOMValueType.ARRAY) {
@@ -368,7 +386,21 @@ public class ATOMOperation extends ATOMElement {
         throw new ATOMOperationException("IN", left, right);
     });
 
-    public static ATOMOperation INTO = new ATOMOperation(Collections.singletonList("INTO"), ORDER_FUNC, (left, right) -> {
+    public static ATOMOperation NOTIN = new ATOMOperation(Arrays.asList("NOTIN", "NIN", "\uD83C\uDFD5"), ORDER_ARRIN, (left, right) -> {
+        ATOMValue leftVal = left.eval();
+        ATOMValue rightVal = right.eval();
+        if (rightVal.getType() == ATOMValueType.ARRAY) {
+            for (int i=0;i<rightVal.getArrVal().size();i++) {
+                if (leftVal.equals(rightVal.getArrVal().get(i))) {
+                    return new ATOMValue(false);
+                }
+            }
+            return new ATOMValue(true);
+        }
+        throw new ATOMOperationException("NOTIN", left, right);
+    });
+
+    public static ATOMOperation INTO = new ATOMOperation(Arrays.asList("INTO", "\uD83D\uDEAA"), ORDER_FUNC, (left, right) -> {
         if (right instanceof ATOMScope) {
             ATOMRuntime.pushIndexedVar(left.eval());
             ATOMValue toReturn = right.compute();
@@ -543,17 +575,19 @@ public class ATOMOperation extends ATOMElement {
             P_SEPERATOR, // :
             S_SEPERATOR, // ,
             PRINT, // PRINT 🖨️
-            INTO, // INTO
+            INTO, // INTO 🚪
             FOREACH, // FOREACH ∀
             IFOREACH, // iFOREACH i∀
             MAP, // MAP 🗺️
             WHERE, // WHERE 🔍
             IWHERE, // iWHERE i🔍
             IN, // IN 🏠
+            NOTIN, // NOTIN NIN 🏕️
             THROUGH, // THROUGH 🕳️
             UNPACK, // UNPACK 🎒
             GET_LENGTH, // 🧵
             STR_TRIM, // ✂
+            ARR_FLATTEN, // 🦶
     };
 
     List<String> commands;

@@ -54,7 +54,7 @@ export default class ATOMValue {
       case 'OBJECT':
         return this.objVal.toString();
       case 'ARRAY':
-        return this.arrVal.toString();
+        return '['+this.arrVal.toString()+']';
       case 'INT':
         return '' + this.intVal;
       case 'STRING':

@@ -7,7 +7,7 @@ import ATOMValueDynamic from './ATOMValueDynamic.js';
 export default class ATOMExpression {
 
   constructor(arg) {
-    this.children = null;
+    this.children = [];
     if (arg instanceof Array) {
       this.children = arg;
       return;
@@ -16,7 +16,6 @@ export default class ATOMExpression {
       this.children = [arg];
       return;
     }
-    this.children = [];
   }
 
   setImplicitParentheticalScope() {
@@ -57,8 +56,8 @@ export default class ATOMExpression {
       if (this.children[i] instanceof ATOMValueDynamic) {
         let val = this.children[i];
         if (val.getType()=='SCOPED') {
-          if (this.children[i-1] instanceof ATOMOperation && children[i-1]==ATOMOperation.DEREFERENCE) {
-            children[i] = new ATOMValue(val.name);
+          if (this.children[i-1] instanceof ATOMOperation && this.children[i-1]==ATOMOperation.DEREFERENCE) {
+            this.children[i] = new ATOMValue(val.name);
           }
         }
       }

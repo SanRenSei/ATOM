@@ -65,6 +65,18 @@ When applied to a string, it will trim the string, removing trailing whitespace.
 # Returns "World"
 ```
 
+## 🦶 (Array Flatten)
+
+When applied to an array of arrays, it will flatten it into a larger array. Non-array elements are treated as single-element arrays.
+
+```
+🦶[[0,1,2],[3,4,5],[6,7,8]]
+# Returns [0,1,2,3,4,5,6,7,8]
+
+🦶[[3,1,4],1,5,[9,2],6]
+# Returns [3,1,4,1,5,9,2,6]
+```
+
 ## ~ (Array Generation or Controller Execution)
 
 If applied to two integer operands, it will returns an array enumerating the range of numbers between them, inclusive.

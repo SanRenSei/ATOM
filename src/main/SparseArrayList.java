@@ -3,6 +3,7 @@ package main;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class SparseArrayList<T> {
@@ -52,6 +53,15 @@ public class SparseArrayList<T> {
             listHead.set(index, value);
         }
         return value;
+    }
+
+    public <R> void forEach(Consumer<? super T> fn) {
+        for (T t : listHead) {
+            fn.accept(t);
+        }
+        for (Integer i : listTail.navigableKeySet()) {
+            fn.accept(listTail.get(i));
+        }
     }
 
     public <R> SparseArrayList<R> map(Function<? super T,R> mapper) {

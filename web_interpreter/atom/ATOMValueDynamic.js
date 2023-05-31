@@ -52,7 +52,7 @@ export default class ATOMValueDynamic extends ATOMValue {
         return ATOMRuntime.getIndexedVar(this.index);
       }
       if (this.getType()=='SCOPED') {
-        return parent.getLocalVar(this.name);
+        return this.parent.getLocalVar(this.name);
       }
       if (this.getType() == 'GLOBAL') {
         return ATOMRuntime.globalVars[name];

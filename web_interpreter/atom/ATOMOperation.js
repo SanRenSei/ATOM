@@ -82,6 +82,22 @@ export default class ATOMOperation {
       throw left + '✂' + right;
     });
 
+    static ARR_FLATTEN = new ATOMOperation(['🦶'], ATOMOperation.ORDER_UNARY, (left, right) => {
+      let rightVal = right.eval();
+      if (left == null && rightVal.getType() == 'ARRAY') {
+        let flattened = [];
+        rightVal.arrVal.forEach(val => {
+          if (val.getType() == 'ARRAY') {
+            val.arrVal.forEach(val2 => flattened.push(val2));
+          } else {
+            flattened.push(val);
+          }
+        });
+        return new ATOMValue(flattened);
+      }
+      throw left + '🦶' + right;
+    });
+
     static ARR_GEN = new ATOMOperation(['~'], ATOMOperation.ORDER_ARRGEN, (left, right) => {
       let rightVal = right.eval();
       if (left == null && rightVal.getType()=='OBJECT') {
@@ -329,7 +345,7 @@ export default class ATOMOperation {
       return rightVal;
     });
 
-    static IN = new ATOMOperation(['='], ATOMOperation.ORDER_ARRIN, (left, right) => {
+    static IN = new ATOMOperation(['IN', '🏠'], ATOMOperation.ORDER_ARRIN, (left, right) => {
       let leftVal = left.eval(), rightVal = right.eval();
       if (rightVal.getType() == 'ARRAY') {
         for (let i=0;i<rightVal.arrVal.length;i++) {
@@ -342,7 +358,20 @@ export default class ATOMOperation {
       throw left + 'IN' + right;
     });
 
-    static INTO = new ATOMOperation(['INTO'], ATOMOperation.ORDER_FUNC, (left, right) => {
+    static NOTIN = new ATOMOperation(['NOTIN', 'NIN', '🏕️'], ATOMOperation.ORDER_ARRIN, (left, right) => {
+      let leftVal = left.eval(), rightVal = right.eval();
+      if (rightVal.getType() == 'ARRAY') {
+        for (let i=0;i<rightVal.arrVal.length;i++) {
+          if (leftVal.equals(rightVal.arrVal[i])) {
+            return new ATOMValue(false);
+          }
+        }
+        return new ATOMValue(true);
+      }
+      throw left + 'NOTIN' + right;
+    });
+
+    static INTO = new ATOMOperation(['INTO', '🚪'], ATOMOperation.ORDER_FUNC, (left, right) => {
       if (right instanceof ATOMScope) {
         ATOMRuntime.pushIndexedVar(left.eval());
         let toReturn = right.compute();
@@ -524,17 +553,19 @@ export default class ATOMOperation {
       ATOMOperation.P_SEPERATOR, // :
       ATOMOperation.S_SEPERATOR, // ,
       ATOMOperation.PRINT, // PRINT 🖨️
-      ATOMOperation.INTO, // INTO
+      ATOMOperation.INTO, // INTO 🚪
       ATOMOperation.FOREACH, // FOREACH ∀
       ATOMOperation.IFOREACH, // iFOREACH i∀
       ATOMOperation.MAP, // MAP 🗺️
       ATOMOperation.WHERE, // WHERE 🔍
       ATOMOperation.IWHERE, // iWHERE i🔍
       ATOMOperation.IN, // IN 🏠
+      ATOMOperation.NOTIN, // NOTIN NIN 🏕️
       ATOMOperation.THROUGH, // THROUGH 🕳️
       ATOMOperation.UNPACK, // UNPACK 🎒
       ATOMOperation.GET_LENGTH, // 🧵
       ATOMOperation.STR_TRIM, // ✂
+      ATOMOperation.ARR_FLATTEN, // 🦶
     ];
 
     constructor(commands, order, operate) {
