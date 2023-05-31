@@ -191,3 +191,173 @@ Will compute the minimum of two numbers or strings.
 # Returns "Hello"
 ```
 
+# ==, !=, <, <=, >, >= (Comparisons)
+
+Will perform comparison operations on values
+
+```
+2==2
+# Returns true
+
+1==2
+# Returns false
+```
+
+# & (And)
+
+Will perform boolean And operation
+
+```
+true&false
+# Returns false
+
+true&true
+# Returns true
+```
+
+# INJECT, ->, => (Injection)
+
+Perform variable injection into a controller. If the left operand is a variable, it will assign a field in the right operand. If the left operand is a controller, it will assign its key/value pairs into the right operand.
+
+```
+a = 5;
+b = {};
+a INJECT b;
+b
+# b will be {a:5}
+
+c = {"foo":"bar"}
+d = {"biz":"baz"};
+c -> d;
+# d will be {"biz":"baz","foo":"bar"}
+```
+
+# = (Assignment)
+
+Performs assignment to a variable
+
+```
+a=5
+# Assigns the value 5 to variable named a
+```
+
+# 🖨, PRINT (Printing)
+
+Prints a value to the console
+
+```
+🖨10
+# Prints 10 to the console
+```
+
+# INTO (Controller execution)
+
+Passes the left operand into the right controller, executes it, and returns the result.
+
+```
+a = 3;
+b = {
+  *%3==0:"Fizz",
+  *%5==0:"Buzz",
+  *
+};
+a INTO b;
+# Returns "Fizz"
+
+5 INTO b
+# Returns "Buzz"
+```
+
+# ∀, FOREACH (For loop)
+
+Takes the left operand as an array and passes it into the right operand as a controller, running a for each loop iterating through the array values.
+
+```
+[3,1,4,1,5] ∀ {🖨*}
+# Prints each of the values in the array (3,1,4,1,5)
+```
+
+# 🔢, i∀, iFOREACH (Indexed for loop)
+
+Performs a for loop, but instead of passing the array values into the controller, it passes the array indeces. 
+
+```
+[3,1,4,1,5] ∀ {🖨*}
+# Prints each of the indeces in the array (0,1,2,3,4)
+```
+
+# 🗺, MAP (Array map)
+
+Takes the left operand as an array and passes it into the right operand as a controller, iterating through the array values, and returning an array of the results.
+
+```
+[3,1,4,1,5] 🗺 {*+1}
+# Returns an array of values that are 1 higher than the original array i.e. [4,2,5,2,6]
+```
+
+# 🔍, WHERE (Array filter)
+
+Takes the left operand as an array and passes it into the right operand as a controller, iterating through the array values, and returning an array of the array values that cause the controller to return a truthy value.
+
+```
+[3,1,4,1,5] 🔍 {*>2}
+# Returns an array of values in the array greater than 2 i.e. [3,4,5]
+```
+
+# i🔍, iWHERE (Array index filter)
+
+Takes the left operand as an array and passes it into the right operand as a controller, iterating through the array indeces, and returning an array of the array indeces that cause the controller to return a truthy value.
+
+```
+[3,1,4,1,5] 🔍 {*%2==1}
+# Returns an array of odd indeces in the array i.e. [1,3]
+```
+
+# 🕳, THROUGH (While loop)
+
+Takes the left operand and passes it into the right operand as a controller. Takes the result, and if it is truthy, passes it back into the controller. Continues until the returned value is not truthy.
+
+```
+n = 0;
+5 🕳 {
+  n+=*;
+  *-1
+}
+# n will be 15 after this runs
+```
+
+# 🎒, UNPACK
+
+Unpacks the left operand as an object. The right operand denotes the keys that are unpacked from the object into locally scoped variables.
+
+```
+a = {"foo":"bar"};
+a UNPACK foo;
+foo
+# The value of variable foo wil be "bar"
+
+b = {"foo":"bar","biz":"baz"};
+b 🎒 {foo, biz};
+foo+biz
+# Both variables will be unpacked, so the values will be added, returning "barbaz"
+```
+
+# +=. -=. *=, /=, ><=, <>= (Compound Evaluation Assignments)
+
+Performs an operation with a variable on the left and an operand on the right. Assigns the result back to the variable.
+
+```
+a = 3;
+a+=1;
+# a will be 4
+a-=2;
+# a will be 2
+a*=5;
+# a will be 10
+a/=2
+# a will be 5
+a><=7
+# a will be 7
+a<>=4
+# a will be 4
+```

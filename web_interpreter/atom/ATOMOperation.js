@@ -366,7 +366,7 @@ export default class ATOMOperation {
       throw left + 'FOREACH' + right;
     });
 
-    static IFOREACH = new ATOMOperation(['iFOREACH', 'i∀'], ATOMOperation.ORDER_FUNC, (left, right) => {
+    static IFOREACH = new ATOMOperation(['iFOREACH', 'i∀', '🔢'], ATOMOperation.ORDER_FUNC, (left, right) => {
       let leftVal = left.eval();
       if (leftVal.getType() == 'ARRAY' && right instanceof ATOMScope) {
         for (let i=0;i<leftVal.arrVal.length;i++) {

@@ -390,7 +390,7 @@ public class ATOMOperation extends ATOMElement {
         }
         throw new ATOMOperationException("FOREACH", left, right);
     });
-    public static ATOMOperation IFOREACH = new ATOMOperation(Arrays.asList("iFOREACH", "i∀"), ORDER_FUNC, (left, right) -> {
+    public static ATOMOperation IFOREACH = new ATOMOperation(Arrays.asList("iFOREACH", "i∀", "\uD83D\uDD22"), ORDER_FUNC, (left, right) -> {
         if (left == null) {
             throw new RuntimeException("No left operand for operator iFOREACH");
         }
