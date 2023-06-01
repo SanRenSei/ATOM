@@ -93,7 +93,7 @@ public class ATOMExpression extends ATOMElement {
             }
 
             if (nextOperationIndex==-1) {
-                throw new RuntimeException("Probably a syntax error somewhere, not enough operators:\n" + this.children);
+                throw new RuntimeException("Probably a syntax error somewhere, not enough operators:\n" + this.children + "\n" + copyOfChildren);
             }
 
             ATOMElement left=null, right=null;

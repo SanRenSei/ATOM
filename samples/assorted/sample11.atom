@@ -36,3 +36,5 @@ result = (path MAP neighbors);
 
 # Flatten it and return
 🦶 result
+
+# {r=[0];🧵*∀r=🦶(r🗺🦶🦶[*,$2.*🗺[*,$1]]);r}

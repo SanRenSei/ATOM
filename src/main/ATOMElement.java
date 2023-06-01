@@ -54,8 +54,8 @@ public abstract class ATOMElement {
             int endIndex = template.currentIndex+1;
             boolean isString = false;
             c = template.source.charAt(endIndex);
-            while ((c>='0' && c<='9') || (c>='A' && c<='z')) {
-                if (c>='A' && c<='z') {
+            while ((c>='0' && c<='9') || isAlphabet(c)) {
+                if (isAlphabet(c)) {
                     isString = true;
                 }
                 endIndex ++;

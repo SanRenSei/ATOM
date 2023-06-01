@@ -42,8 +42,8 @@ export default class ATOMElement {
       let endIndex = atomTemplate.currentIndex+1;
       let isString = false;
       c = atomTemplate.source[endIndex];
-      while ((c>='0' && c<='9') || (c>='A' && c<='z')) {
-        if (c>='A' && c<='z') {
+      while ((c>='0' && c<='9') || this.isAlphabet(c)) {
+        if (this.isAlphabet(c)) {
           isString = true;
         }
         endIndex ++;
@@ -75,6 +75,8 @@ export default class ATOMElement {
     }
     console.log('NO MATCH FOUND FOR CHAR CODE')
     console.log((''+c).charCodeAt(0))
+    console.log('INDEX IS');
+    console.log(atomTemplate.currentIndex);
     throw c;
   }
 

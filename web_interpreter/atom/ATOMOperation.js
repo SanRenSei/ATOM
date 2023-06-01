@@ -392,6 +392,14 @@ export default class ATOMOperation {
         }
         return ATOMValue.NULL();
       }
+      if (leftVal.getType() == 'INT' && right instanceof ATOMScope) {
+        for (let i=0;i<leftVal.intVal;i++) {
+          ATOMRuntime.pushIndexedVar(new ATOMValue(i));
+          right.compute();
+          ATOMRuntime.popIndexedVar();
+        }
+        return ATOMValue.NULL();
+      }
       throw left + 'FOREACH' + right;
     });
 

@@ -14,7 +14,7 @@ export default class ATOMScope {
     this.branches = [];
     this.localVars = {};
     if (!arg1 && !arg2) {
-      arg1 = 'PARENTHESIS';
+      return;
     }
     if (typeof arg1 == 'string' && !arg2) {
       this.type = arg1;

@@ -262,7 +262,25 @@ Prints a value to the console
 # Prints 10 to the console
 ```
 
-# INTO (Controller execution)
+# 🏠, IN (Array Contains), 🏕, NIN, NOTIN (Array Not Contains)
+
+Checks if the right operand as an array contains or does not contain the left operand as a value.
+
+```
+0 IN [1,2,3]
+# Returns false
+
+"Hello" 🏠 ["Hello","World]
+# Returns true
+
+0 NIN [1,2,3]
+# Returns true
+
+"Hello" 🏕 ["Hello","World]
+# Returns false
+```
+
+# 🚪, INTO (Controller execution)
 
 Passes the left operand into the right controller, executes it, and returns the result.
 
@@ -284,9 +302,14 @@ a INTO b;
 
 Takes the left operand as an array and passes it into the right operand as a controller, running a for each loop iterating through the array values.
 
+If the left operand is an integer, it will run a for loop from 0 to that number minus 1, passing in the iterator as the parameter.
+
 ```
 [3,1,4,1,5] ∀ {🖨*}
 # Prints each of the values in the array (3,1,4,1,5)
+
+5 ∀ {🖨*}
+# Prints the numbers from 0 to 4
 ```
 
 # 🔢, i∀, iFOREACH (Indexed for loop)

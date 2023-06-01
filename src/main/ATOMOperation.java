@@ -420,6 +420,14 @@ public class ATOMOperation extends ATOMElement {
             }
             return null;
         }
+        if (leftVal.getType() == ATOMValueType.INT && right instanceof ATOMScope) {
+            for (int i=0;i<leftVal.getIntVal();i++) {
+                ATOMRuntime.pushIndexedVar(new ATOMValue(i));
+                right.compute();
+                ATOMRuntime.popIndexedVar();
+            }
+            return null;
+        }
         throw new ATOMOperationException("FOREACH", left, right);
     });
     public static ATOMOperation IFOREACH = new ATOMOperation(Arrays.asList("iFOREACH", "i∀", "\uD83D\uDD22"), ORDER_FUNC, (left, right) -> {
@@ -452,7 +460,7 @@ public class ATOMOperation extends ATOMElement {
             }
             return new ATOMValue(mappedVals);
         }
-        throw new ATOMOperationException("MAP", left, right);
+        throw new ATOMOperationException("MAP", left.eval(), right);
     });
     public static ATOMOperation WHERE = new ATOMOperation(Arrays.asList("WHERE","🔍"), ORDER_FUNC, (left, right) -> {
         ATOMValue leftVal = left.eval();

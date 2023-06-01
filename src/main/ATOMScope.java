@@ -16,7 +16,6 @@ public class ATOMScope extends ATOMElement {
     public HashMap<String, ATOMValue> localVars = new HashMap<>();
 
     public ATOMScope() {
-        this(ATOMScopeType.PARENTHESIS);
     }
 
     public ATOMScope(ATOMScopeType type) {
