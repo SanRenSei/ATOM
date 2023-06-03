@@ -1,6 +1,7 @@
 import ATOMElement from './ATOMElement.js';
 import ATOMExpression from './ATOMExpression.js';
 import ATOMOperation from './ATOMOperation.js';
+import ATOMRuntime from './ATOMRuntime.js';
 import ATOMScopeType from './ATOMScopeType.js';
 import ATOMValue from './ATOMValue.js';
 import ATOMValueDynamic from './ATOMValueDynamic.js';
@@ -192,6 +193,9 @@ export default class ATOMScope {
       }
       pathToRoot = pathToRoot.parent;
     }
+    if (ATOMRuntime.globalVars[name]!=null) {
+      return ATOMRuntime.globalVars[name];
+    }
     return ATOMValue.NULL();
   }
 
@@ -203,6 +207,10 @@ export default class ATOMScope {
         return;
       }
       pathToRoot = pathToRoot.parent;
+    }
+    if (ATOMRuntime.globalVars[name]!=null) {
+      ATOMRuntime.globalVars[name] = val;
+      return;
     }
     this.localVars[name] = val;
   }

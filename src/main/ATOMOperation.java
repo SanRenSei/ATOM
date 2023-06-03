@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class ATOMOperation extends ATOMElement {
@@ -52,6 +53,9 @@ public class ATOMOperation extends ATOMElement {
         if (leftVal.getType() == ATOMValueType.OBJECT && leftVal.getObjVal().type==ATOMScopeType.OBJECT) {
             return leftVal.getObjVal().dereference(rightVal);
         }
+        if (leftVal.getType() == ATOMValueType.NULL) {
+            return ATOMValue.NULL();
+        }
         throw new ATOMOperationException(".", left, right);
     });
 
@@ -71,10 +75,13 @@ public class ATOMOperation extends ATOMElement {
             int index = leftVal.getArrVal().size()-rightVal.getIntVal();
             return leftVal.getArrVal().get(index).eval();
         }
+        if (leftVal.getType() == ATOMValueType.NULL) {
+            return ATOMValue.NULL();
+        }
         throw new ATOMOperationException(".-", left, right);
     });
 
-    public static ATOMOperation GET_LENGTH = new ATOMOperation(Collections.singletonList("\uD83E\uDDF5"), ORDER_UNARY, (left, right) -> {
+    public static ATOMOperation GET_LENGTH = new ATOMOperation(Collections.singletonList("\uD83D\uDCCF"), ORDER_UNARY, (left, right) -> {
         ATOMValue rightVal = right.eval();
         if (left == null && rightVal.getType() == ATOMValueType.STRING) {
             return new ATOMValue(rightVal.getStrVal().length());
@@ -82,7 +89,7 @@ public class ATOMOperation extends ATOMElement {
         if (left == null && rightVal.getType() == ATOMValueType.ARRAY) {
             return new ATOMValue(rightVal.getArrVal().size());
         }
-        throw new ATOMOperationException("\uD83E\uDDF5", left, right);
+        throw new ATOMOperationException("\uD83D\uDCCF", left, right);
     });
 
     public static ATOMOperation STR_TRIM = new ATOMOperation(Collections.singletonList("✂"), ORDER_UNARY, (left, right) -> {
@@ -107,6 +114,23 @@ public class ATOMOperation extends ATOMElement {
             return new ATOMValue(flattened);
         }
         throw new ATOMOperationException("\uD83E\uDDB6", left, right);
+    });
+
+    public static ATOMOperation TO_STRING = new ATOMOperation(Collections.singletonList("\uD83E\uDDF6"), ORDER_UNARY, (left, right) -> {
+        ATOMValue rightVal = right.eval();
+        if (left == null) {
+            return new ATOMValue(rightVal.toString());
+        }
+        throw new ATOMOperationException("\uD83E\uDDF6", left, right);
+    });
+
+    public static ATOMOperation ATOM_EXECUTE = new ATOMOperation(Collections.singletonList("⚛"), ORDER_UNARY, (left, right) -> {
+        ATOMValue rightVal = right.eval();
+        if (left == null) {
+            String program = rightVal.getStrVal();
+            return ATOMRuntime.processInput(program);
+        }
+        throw new ATOMOperationException("⚛", left, right);
     });
 
     public static ATOMOperation ARR_GEN = new ATOMOperation(Collections.singletonList("~"), ORDER_ARRGEN, (left, right) -> {
@@ -157,10 +181,10 @@ public class ATOMOperation extends ATOMElement {
             return new ATOMValue(leftVal.getIntVal() / rightVal.getIntVal());
         }
         if (leftVal.getType() == ATOMValueType.STRING && rightVal.getType() == ATOMValueType.STRING) {
-            List<ATOMValue> splitStr = Arrays.stream(leftVal.getStrVal().split(rightVal.getStrVal())).map(ATOMValue::new).collect(Collectors.toList());
+            List<ATOMValue> splitStr = Arrays.stream(leftVal.getStrVal().split(Pattern.quote(rightVal.getStrVal()))).map(ATOMValue::new).collect(Collectors.toList());
             return new ATOMValue(splitStr);
         }
-        throw new ATOMOperationException("/", left, right);
+        throw new ATOMOperationException("/", left.eval(), right.eval());
     });
     public static ATOMOperation MODULO = new ATOMOperation(Collections.singletonList("%"), ORDER_MULT, (left, right) -> {
         ATOMValue leftVal = left.eval();
@@ -191,6 +215,9 @@ public class ATOMOperation extends ATOMElement {
         }
         if (leftVal.getType() == ATOMValueType.STRING && rightVal.getType() == ATOMValueType.STRING) {
             return new ATOMValue(leftVal.getStrVal() + rightVal.getStrVal());
+        }
+        if (leftVal.getType() == ATOMValueType.STRING) {
+            return new ATOMValue(leftVal.getStrVal() + rightVal.toString());
         }
         if (leftVal.getType() == ATOMValueType.ARRAY) {
             leftVal.getArrVal().add(rightVal);
@@ -448,6 +475,7 @@ public class ATOMOperation extends ATOMElement {
         }
         throw new ATOMOperationException("IFOREACH", left, right);
     });
+
     public static ATOMOperation MAP = new ATOMOperation(Arrays.asList("MAP", "\uD83D\uDDFA"), ORDER_FUNC, (left, right) -> {
         ATOMValue leftVal = left.eval();
         if (leftVal.getType() == ATOMValueType.ARRAY && right instanceof ATOMScope) {
@@ -462,6 +490,22 @@ public class ATOMOperation extends ATOMElement {
         }
         throw new ATOMOperationException("MAP", left.eval(), right);
     });
+
+    public static ATOMOperation IMAP = new ATOMOperation(Arrays.asList("iMAP", "i\uD83D\uDDFA"), ORDER_FUNC, (left, right) -> {
+        ATOMValue leftVal = left.eval();
+        if (leftVal.getType() == ATOMValueType.ARRAY && right instanceof ATOMScope) {
+            List<ATOMValue> mappedVals = new ArrayList<>();
+            for (int i=0;i< leftVal.getArrVal().size();i++) {
+                ATOMValue iterator = new ATOMValue(i);
+                ATOMRuntime.pushIndexedVar(iterator.eval());
+                mappedVals.add(right.compute());
+                ATOMRuntime.popIndexedVar();
+            }
+            return new ATOMValue(mappedVals);
+        }
+        throw new ATOMOperationException("MAP", left.eval(), right);
+    });
+
     public static ATOMOperation WHERE = new ATOMOperation(Arrays.asList("WHERE","🔍"), ORDER_FUNC, (left, right) -> {
         ATOMValue leftVal = left.eval();
         if (leftVal.getType() == ATOMValueType.ARRAY && (right instanceof ATOMScope)) {
@@ -587,15 +631,18 @@ public class ATOMOperation extends ATOMElement {
             FOREACH, // FOREACH ∀
             IFOREACH, // iFOREACH i∀
             MAP, // MAP 🗺️
+            IMAP, // iMAP i🗺️
             WHERE, // WHERE 🔍
             IWHERE, // iWHERE i🔍
             IN, // IN 🏠
             NOTIN, // NOTIN NIN 🏕
             THROUGH, // THROUGH 🕳️
             UNPACK, // UNPACK 🎒
-            GET_LENGTH, // 🧵
+            GET_LENGTH, // 📏
             STR_TRIM, // ✂
             ARR_FLATTEN, // 🦶
+            TO_STRING, // 🧶
+            ATOM_EXECUTE, // ⚛
     };
 
     List<String> commands;

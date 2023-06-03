@@ -91,7 +91,7 @@ export default class ATOMValue {
   setType(newType) {
     this.type = newType;
     if (newType == 'ARRAY') {
-      arrVal = new SparseArrayList();
+      this.arrVal = new SparseArrayList();
     }
   }
 

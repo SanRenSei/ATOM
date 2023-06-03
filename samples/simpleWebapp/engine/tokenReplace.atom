@@ -1,0 +1,12 @@
+lib = @samples/stdlib/stdlib.atom;
+
+tr = {
+  splitStr = */"{{";
+  splitArr = 🦶 (splitStr i🗺 {
+    0==*:splitStr.*,
+    exprSplit = splitStr.*/"}}";
+    newStr = "" + ⚛(exprSplit.0) + exprSplit.1;
+    newStr INTO tr
+  });
+  splitArr INTO lib."join"
+}

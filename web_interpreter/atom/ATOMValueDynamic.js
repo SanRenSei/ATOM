@@ -65,7 +65,7 @@ export default class ATOMValueDynamic extends ATOMValue {
         rootVal.setType('ARRAY');
       }
       if (rootVal.getType() == 'ARRAY') {
-        return rootVal.arrVal[this.index].eval();
+        return rootVal.arrVal.get(this.index).eval();
       }
       throw 'Cannot get indexed var from nonarray: ' + rootVal;
     }

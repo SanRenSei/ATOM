@@ -203,6 +203,9 @@ public class ATOMScope extends ATOMElement {
             }
             pathToRoot = pathToRoot.parent;
         }
+        if (ATOMRuntime.globalVars.get(name)!=null) {
+            return ATOMRuntime.globalVars.get(name);
+        }
         return ATOMValue.NULL();
     }
 
@@ -214,6 +217,10 @@ public class ATOMScope extends ATOMElement {
                 return;
             }
             pathToRoot = pathToRoot.parent;
+        }
+        if (ATOMRuntime.globalVars.get(name)!=null) {
+            ATOMRuntime.globalVars.put(name, val);
+            return;
         }
         localVars.put(name, val);
     }

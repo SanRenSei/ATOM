@@ -44,15 +44,15 @@ b
 # b will be {"foo":"bar"}
 ```
 
-## 🧵 (Length)
+## 📏 (Length)
 
 When applied to a string, it will return the length of the string. When applied to an array, it will return the length of the array.
 
 ```
-🧵"Hello"
+📏"Hello"
 # Returns 5
 
-🧵[1,2,3]
+📏[1,2,3]
 # Returns 3
 ```
 
@@ -75,6 +75,32 @@ When applied to an array of arrays, it will flatten it into a larger array. Non-
 
 🦶[[3,1,4],1,5,[9,2],6]
 # Returns [3,1,4,1,5,9,2,6]
+```
+
+## 🧶 (To String)
+
+Returns the string value of any operand on the right
+
+```
+🧶"Apples"
+# Returns "\"Apples\""
+
+🧶[1,2,3]
+# Returns "[1,2,3]"
+```
+
+## ⚛ (Execute ATOM Code)
+
+Executes the right operand as an arbitrary string, as an ATOM program and returns the result
+
+```
+⚛"1+1"
+# Returns 2
+
+$globalVariable=5;
+⚛"$globalVariable=2"
+globalVariable
+# Returns 2
 ```
 
 ## ~ (Array Generation or Controller Execution)

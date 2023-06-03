@@ -23,11 +23,11 @@ export default class SparseArrayList {
     if (index<0) {
       index = this.size()+index;
     }
-    if (index < this.listHead.size() && index>=0) {
+    if (index < this.listHead.length && index>=0) {
       return this.listHead[index];
     }
-    if (listTail[index]!=undefined) {
-      return listTail[index];
+    if (this.listTail[index]!=undefined) {
+      return this.listTail[index];
     }
     return ATOMValue.NULL();
   }

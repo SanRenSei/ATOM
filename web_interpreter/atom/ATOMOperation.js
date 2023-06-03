@@ -44,6 +44,9 @@ export default class ATOMOperation {
       if (leftVal.getType() == 'OBJECT' && leftVal.objectVal.type=='OBJECT') {
         return leftVal.objVal.dereference(rightVal);
       }
+      if (leftVal.getType() == 'NULL') {
+        return ATOMValue.NULL();
+      }
       throw left + '.' + right;
     });
 
@@ -60,10 +63,13 @@ export default class ATOMOperation {
         let index = leftVal.arrVal.length - rightVal.intVal;
         return leftVal.arrVal[index].eval();
       }
+      if (leftVal.getType() == 'NULL') {
+        return ATOMValue.NULL();
+      }
       throw left + '.-' + right;
     });
 
-    static GET_LENGTH = new ATOMOperation(['🧵'], ATOMOperation.ORDER_UNARY, (left, right) => {
+    static GET_LENGTH = new ATOMOperation(['📏'], ATOMOperation.ORDER_UNARY, (left, right) => {
       let rightVal = right.eval();
       if (left == null && rightVal.getType()=='STRING') {
         return new ATOMValue(rightVal.strVal.length);
@@ -71,7 +77,7 @@ export default class ATOMOperation {
       if (left == null && rightVal.getType()=='ARRAY') {
         return new ATOMValue(rightVal.arrVal.length);
       }
-      throw left + '🧵' + right;
+      throw left + '📏' + right;
     });
 
     static STR_TRIM = new ATOMOperation(['✂'], ATOMOperation.ORDER_UNARY, (left, right) => {
@@ -80,6 +86,23 @@ export default class ATOMOperation {
         return new ATOMValue(rightVal.strVal.trim());
       }
       throw left + '✂' + right;
+    });
+
+    static TO_STRING = new ATOMOperation(['🧶'], ATOMOperation.ORDER_UNARY, (left, right) => {
+      let rightVal = right.eval();
+      if (left == null) {
+        return new ATOMValue(rightVal.toString());
+      }
+      throw left + '🧶' + right;
+    });
+
+    static ATOM_EXECUTE = new ATOMOperation(['⚛'], ATOMOperation.ORDER_UNARY, (left, right) => {
+      let rightVal = right.eval();
+      if (left == null) {
+        let program = rightVal.getStrVal();
+        return ATOMRuntime.processInput(program);
+      }
+      throw left + '⚛' + right;
     });
 
     static ARR_FLATTEN = new ATOMOperation(['🦶'], ATOMOperation.ORDER_UNARY, (left, right) => {
@@ -177,6 +200,9 @@ export default class ATOMOperation {
       }
       if (leftVal.getType() == 'STRING' && rightVal.getType() == 'STRING') {
         return new ATOMValue(leftVal.strVal + rightVal.strVal);
+      }
+      if (leftVal.getType() == 'STRING') {
+        return new ATOMValue(leftVal.strVal + rightVal.toString());
       }
       if (leftVal.getType() == 'ARRAY') {
         leftVal.arrVal.push(rightVal);
@@ -431,6 +457,20 @@ export default class ATOMOperation {
       throw left + 'MAP' + right;
     });
 
+    static iMAP = new ATOMOperation(['iMAP', 'i🗺'], ATOMOperation.ORDER_FUNC, (left, right) => {
+      let leftVal = left.eval();
+      if (leftVal.getType() == 'ARRAY' && right instanceof ATOMScope) {
+        let mappedVals = [];
+        for (let i=0;i<leftVal.arrVal.length;i++) {
+          ATOMRuntime.pushIndexedVar(new ATOMValue(i));
+          mappedVals.push(right.compute());
+          ATOMRuntime.popIndexedVar();
+        }
+        return new ATOMValue(mappedVals);
+      }
+      throw left + 'iMAP' + right;
+    });
+
     static WHERE = new ATOMOperation(['WHERE', '🔍'], ATOMOperation.ORDER_FUNC, (left, right) => {
       let leftVal = left.eval();
       if (leftVal.getType() == 'ARRAY' && right instanceof ATOMScope) {
@@ -565,15 +605,18 @@ export default class ATOMOperation {
       ATOMOperation.FOREACH, // FOREACH ∀
       ATOMOperation.IFOREACH, // iFOREACH i∀
       ATOMOperation.MAP, // MAP 🗺️
+      ATOMOperation.iMAP, // iMAP i🗺️
       ATOMOperation.WHERE, // WHERE 🔍
       ATOMOperation.IWHERE, // iWHERE i🔍
       ATOMOperation.IN, // IN 🏠
       ATOMOperation.NOTIN, // NOTIN NIN 🏕
       ATOMOperation.THROUGH, // THROUGH 🕳️
       ATOMOperation.UNPACK, // UNPACK 🎒
-      ATOMOperation.GET_LENGTH, // 🧵
+      ATOMOperation.GET_LENGTH, // 📏
       ATOMOperation.STR_TRIM, // ✂
       ATOMOperation.ARR_FLATTEN, // 🦶
+      ATOMOperation.TO_STRING, // 🧶
+      ATOMOperation.ATOM_EXECUTE, // ⚛
     ];
 
     constructor(commands, order, operate) {

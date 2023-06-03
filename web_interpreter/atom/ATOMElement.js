@@ -32,10 +32,14 @@ export default class ATOMElement {
       let startIndex = atomTemplate.currentIndex;
       let endIndex = atomTemplate.currentIndex+1;
       while (atomTemplate.source[endIndex]!='"') {
-        endIndex++;
+        if (template.source[endIndex]=='\\' && template.source[endIndex+1]=='"') {
+          endIndex+=2;
+        } else {
+          endIndex++;
+        }
       }
       atomTemplate.currentIndex = endIndex+1;
-      return new ATOMValue(atomTemplate.source.substring(startIndex+1, endIndex));
+      return new ATOMValue(atomTemplate.source.substring(startIndex+1, endIndex).replace(/\\"/g, '"'));
     }
     if (c=='$') {
       let startIndex = atomTemplate.currentIndex+1;

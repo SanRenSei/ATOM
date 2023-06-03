@@ -10,7 +10,7 @@ public abstract class ATOMElement {
         char c = template.currentValidChar();
         for (ATOMOperation op : ATOMOperation.operations) {
             for (String opStr : op.commands) {
-                if (c==opStr.charAt(0) && template.source.substring(template.currentIndex, template.currentIndex+opStr.length()).equals(opStr)) {
+                if (c==opStr.charAt(0) && template.source.startsWith(opStr, template.currentIndex)) {
                     template.currentIndex += opStr.length();
                     return op;
                 }
@@ -44,10 +44,14 @@ public abstract class ATOMElement {
             int startIndex = template.currentIndex;
             int endIndex = template.currentIndex+1;
             while (template.source.charAt(endIndex)!='"') {
-                endIndex++;
+                if (template.source.charAt(endIndex)=='\\' && template.source.charAt(endIndex+1)=='"') {
+                    endIndex+=2;
+                } else {
+                    endIndex++;
+                }
             }
             template.currentIndex = endIndex+1;
-            return new ATOMValue(template.source.substring(startIndex+1, endIndex));
+            return new ATOMValue(template.source.substring(startIndex+1, endIndex).replaceAll("\\\\\"", "\""));
         }
         if (c=='$') {
             int startIndex = template.currentIndex+1;
