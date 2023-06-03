@@ -1,5 +1,6 @@
 import ATOMElement from './ATOMElement.js';
 import ATOMTemplate from './ATOMTemplate.js';
+import ATOMValue from './ATOMValue.js';
 
 export default class ATOMRuntime {
 
@@ -25,6 +26,13 @@ export default class ATOMRuntime {
 
   static processInput(input) {
     return ATOMElement.fromTemplate(new ATOMTemplate(input)).eval();
+  }
+
+  static getGlobalVar(name) {
+    if (ATOMRuntime.globalVars[name]!=null) {
+      return ATOMRuntime.globalVars[name];
+    }
+    return ATOMValue.NULL();
   }
 
   static injectVariable(name, value) {

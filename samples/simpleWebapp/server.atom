@@ -3,5 +3,5 @@ atomWebserver = @samples/simpleWebapp/engine/atomWebserver.atom;
 $currentValue = 0;
 {
   "/index.html" : @samples/simpleWebapp/web/index.html,
-  "/increment" : $currentValue+=1; @samples/simpleWebapp/web/currentValue.html
+  "/increment" : currentValue+=1; @samples/simpleWebapp/web/currentValue.html
 } INTO atomWebserver

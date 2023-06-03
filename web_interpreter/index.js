@@ -12,5 +12,6 @@ runButton.onclick = () => {
     outputConsole.innerHTML = outputConsole.innerHTML + '\n' + str;
   }
   outputConsole.innerHTML = '';
+  ATOMRuntime.reset();
   console.log(ATOMRuntime.processInput(inputProgram.value).toString());
 }

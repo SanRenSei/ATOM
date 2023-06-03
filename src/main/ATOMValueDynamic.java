@@ -59,7 +59,7 @@ public class ATOMValueDynamic extends ATOMValue {
                 return parent.getLocalVar(name);
             }
             if (getType() == ATOMValueType.GLOBAL) {
-                return ATOMRuntime.globalVars.get(name);
+                return ATOMRuntime.getGlobalVar(name);
             }
             throw new RuntimeException("Something went wrong with type in getVal");
         }

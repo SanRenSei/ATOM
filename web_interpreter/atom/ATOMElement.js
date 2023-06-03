@@ -32,7 +32,7 @@ export default class ATOMElement {
       let startIndex = atomTemplate.currentIndex;
       let endIndex = atomTemplate.currentIndex+1;
       while (atomTemplate.source[endIndex]!='"') {
-        if (template.source[endIndex]=='\\' && template.source[endIndex+1]=='"') {
+        if (atomTemplate.source[endIndex]=='\\' && atomTemplate.source[endIndex+1]=='"') {
           endIndex+=2;
         } else {
           endIndex++;

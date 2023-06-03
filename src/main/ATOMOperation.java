@@ -447,6 +447,15 @@ public class ATOMOperation extends ATOMElement {
             }
             return null;
         }
+        if (leftVal.getType() == ATOMValueType.STRING && right instanceof ATOMScope) {
+            for (int i=0;i<leftVal.getStrVal().length();i++) {
+                ATOMElement iterator = new ATOMValue(""+leftVal.getStrVal().charAt(i));
+                ATOMRuntime.pushIndexedVar(iterator.eval());
+                right.compute();
+                ATOMRuntime.popIndexedVar();
+            }
+            return null;
+        }
         if (leftVal.getType() == ATOMValueType.INT && right instanceof ATOMScope) {
             for (int i=0;i<leftVal.getIntVal();i++) {
                 ATOMRuntime.pushIndexedVar(new ATOMValue(i));

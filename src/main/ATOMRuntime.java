@@ -38,6 +38,13 @@ public class ATOMRuntime {
     }
     // BUNDLER: END IGNORE
 
+    public static ATOMValue getGlobalVar(String name) {
+        if (globalVars.containsKey(name)) {
+            return globalVars.get(name);
+        }
+        return ATOMValue.NULL();
+    }
+
     public static void injectVariable(String name, ATOMValue value) {
         globalVars.put(name, value);
     }

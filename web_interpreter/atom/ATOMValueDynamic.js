@@ -55,7 +55,7 @@ export default class ATOMValueDynamic extends ATOMValue {
         return this.parent.getLocalVar(this.name);
       }
       if (this.getType() == 'GLOBAL') {
-        return ATOMRuntime.globalVars[name];
+        return ATOMRuntime.getGlobalVar(this.name);
       }
       throw 'Something went wrong with type in getVal';
     }
