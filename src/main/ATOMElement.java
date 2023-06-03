@@ -1,6 +1,7 @@
 package main;
 
 import java.io.File;
+import java.util.Scanner;
 
 public abstract class ATOMElement {
 
@@ -29,12 +30,25 @@ public abstract class ATOMElement {
         if (c=='@') {
             int startIndex = template.currentIndex;
             int endIndex = template.currentIndex+1;
-            while (template.source.charAt(endIndex)!='\n' && template.source.charAt(endIndex)!=';') {
+            while (isFileChar(template.source.charAt(endIndex))) {
                 endIndex++;
+                if (endIndex == template.source.length()) {
+                    break;
+                }
             }
             template.currentIndex = endIndex;
             try {
-                return ATOMRuntime.processFile(new File(template.source.substring(startIndex + 1, endIndex)));
+                File f = new File(template.source.substring(startIndex + 1, endIndex));
+                if (f.getName().indexOf(".atom")>0) {
+                    return ATOMRuntime.processFile(f);
+                } else {
+                    String fileContent = "";
+                    Scanner in = new Scanner(f);
+                    while (in.hasNext()) {
+                        fileContent += in.nextLine()+'\n';
+                    }
+                    return new ATOMValue(fileContent);
+                }
             } catch (Exception e) {
                 return ATOMValue.NULL();
             }
@@ -102,6 +116,10 @@ public abstract class ATOMElement {
 
     private static boolean isAlphabet(char c) {
         return c >= 'A' && c <= 'Z' || c>='a' && c<='z';
+    }
+
+    private static boolean isFileChar(char c) {
+        return c >= 'A' && c <= 'Z' || c>='a' && c<='z' || c>='0' && c<='9' || c=='_' || c=='/' || c=='.';
     }
 
 }
