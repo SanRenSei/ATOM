@@ -167,6 +167,7 @@ export default class ATOMScope {
       throw 'Something went wrong with ATOMScopeType in derefernce';
     }
 
+    ATOMRuntime.pushIndexedVar(key);
     let predicate = null;
     for (let branch in this.branches) {
       for (let i=0;i<branch[0].length;i++) {
@@ -174,14 +175,17 @@ export default class ATOMScope {
       }
       if (predicate.equals(key)) {
         if (branch[1].length==0) {
+          ATOMRuntime.popIndexedVar();
           return ATOMValue.NULL();
         }
         for (let i=0;i<branch[1].length;i++) {
           predicate = branch[1][i].eval();
         }
+        ATOMRuntime.popIndexedVar();
         return predicate;
       }
     }
+    ATOMRuntime.popIndexedVar();
     return ATOMValue.NULL();
   }
 

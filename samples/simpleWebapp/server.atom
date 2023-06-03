@@ -1,11 +1,7 @@
-tokenReplace = @samples/simpleWebapp/engine/tokenReplace.atom;
-
-fetchHandlerScript = "<script src=\"fetchHandler.js\"></script>";
+atomWebserver = @samples/simpleWebapp/engine/atomWebserver.atom;
 
 $currentValue = 0;
 {
-  "/" : $currentValue += 1,
-  "/index.html" : fetchHandlerScript+(@samples/simpleWebapp/web/index.html INTO tokenReplace),
-  "/fetchHandler.js" : @samples/simpleWebapp/engine/fetchHandler.js,
-  "/increment" : $currentValue+=1; @samples/simpleWebapp/web/currentValue.html INTO tokenReplace
-} INTO $httpServer
+  "/index.html" : @samples/simpleWebapp/web/index.html,
+  "/increment" : $currentValue+=1; @samples/simpleWebapp/web/currentValue.html
+} INTO atomWebserver

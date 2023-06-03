@@ -177,6 +177,7 @@ public class ATOMScope extends ATOMElement {
             throw new RuntimeException("Something went wrong with ATOMScopeType in derefernce");
         }
 
+        ATOMRuntime.pushIndexedVar(key);
         ATOMValue predicate = null;
         for (List<ATOMExpression>[] branch : branches) {
             for (int i = 0; i < branch[0].size(); i++) {
@@ -184,14 +185,17 @@ public class ATOMScope extends ATOMElement {
             }
             if (predicate.equals(key)) {
                 if (branch[1].size()==0) {
+                    ATOMRuntime.popIndexedVar();
                     return ATOMValue.NULL();
                 }
                 for (int i = 0; i < branch[1].size(); i++) {
                     predicate = branch[1].get(i).eval();
                 }
+                ATOMRuntime.popIndexedVar();
                 return predicate;
             }
         }
+        ATOMRuntime.popIndexedVar();
         return ATOMValue.NULL();
     }
 

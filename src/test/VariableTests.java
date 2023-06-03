@@ -27,6 +27,7 @@ public class VariableTests {
 
     @Test
     public void nullArithmeticTypeInferenceTest() {
+        ATOMRuntime.reset();
         assertEquals(ATOMRuntime.processInput("a + 5").compute().getIntVal(), 5);
         assertEquals(ATOMRuntime.processInput("5 + a").compute().getIntVal(), 5);
         assertEquals(ATOMRuntime.processInput("a - 5").compute().getIntVal(), -5);

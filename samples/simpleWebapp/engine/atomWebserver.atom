@@ -1,0 +1,12 @@
+tokenReplace = @samples/simpleWebapp/engine/tokenReplace.atom;
+
+fetchHandlerScript = "<script src=\"fetchHandler.js\"></script>";
+
+{
+  routes = *;
+  {
+    "/index.html":fetchHandlerScript+(routes.* INTO tokenReplace),
+    "/fetchHandler.js" : @samples/simpleWebapp/engine/fetchHandler.js,
+    *:""+routes.* INTO tokenReplace
+  } INTO $httpServer
+}

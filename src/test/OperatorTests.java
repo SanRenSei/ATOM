@@ -58,12 +58,12 @@ public class OperatorTests {
 
     @Test
     public void stringLength() {
-        assertEquals(ATOMRuntime.processInput("\uD83E\uDDF5\"foo\"").compute().getIntVal(), 3);
+        assertEquals(ATOMRuntime.processInput("\uD83D\uDCCF\"foo\"").compute().getIntVal(), 3);
     }
 
     @Test
     public void arrayLength() {
-        assertEquals(ATOMRuntime.processInput("\uD83E\uDDF5[3,1,4]").compute().getIntVal(), 3);
+        assertEquals(ATOMRuntime.processInput("\uD83D\uDCCF[3,1,4]").compute().getIntVal(), 3);
     }
 
     @Test
@@ -90,6 +90,7 @@ public class OperatorTests {
 
     @Test
     public void dereferenceObjectTest() {
+        ATOMRuntime.reset();
         assertEquals(ATOMRuntime.processInput("{\"a\":1,\"b\":2}.\"a\"").compute().getIntVal(), 1);
         assertEquals(ATOMRuntime.processInput("{\"a\":1,\"b\":2}.a").compute().getIntVal(), 1);
     }
