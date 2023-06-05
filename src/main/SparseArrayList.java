@@ -21,6 +21,14 @@ public class SparseArrayList<T> {
         return listHead.add(t);
     }
 
+    public void remove(int index) {
+        if (listHead.size()>index) {
+            listHead.remove(index);
+        } else {
+            listTail.remove(index);
+        }
+    }
+
     public int size() {
         return listHead.size() + listTail.size();
     }

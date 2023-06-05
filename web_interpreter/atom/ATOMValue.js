@@ -24,7 +24,7 @@ export default class ATOMValue {
     if (typeof val == 'object') {
       if (Array.isArray(val)) {
         this.type = 'ARRAY';
-        this.arrVal = val;
+        this.arrVal = new SparseArrayList(val);
       } else {
         this.type = 'OBJECT';
         this.objVal = val;
@@ -54,7 +54,7 @@ export default class ATOMValue {
       case 'OBJECT':
         return this.objVal.toString();
       case 'ARRAY':
-        return '['+this.arrVal.toString()+']';
+        return this.arrVal.toString();
       case 'INT':
         return '' + this.intVal;
       case 'STRING':

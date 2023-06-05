@@ -71,13 +71,16 @@ export default class ATOMOperation {
 
     static GET_LENGTH = new ATOMOperation(['📏'], ATOMOperation.ORDER_UNARY, (left, right) => {
       let rightVal = right.eval();
+      if (left == null && rightVal.getType()=='NULL') {
+        return ATOMValue.NULL();
+      }
       if (left == null && rightVal.getType()=='STRING') {
         return new ATOMValue(rightVal.strVal.length);
       }
       if (left == null && rightVal.getType()=='ARRAY') {
-        return new ATOMValue(rightVal.arrVal.length);
+        return new ATOMValue(rightVal.arrVal.size());
       }
-      throw left + '📏' + right;
+      throw left + '📏' + rightVal;
     });
 
     static STR_TRIM = new ATOMOperation(['✂'], ATOMOperation.ORDER_UNARY, (left, right) => {
@@ -161,6 +164,9 @@ export default class ATOMOperation {
       if (leftVal.getType() == 'NULL' && rightVal.getType() == 'INT') {
         return new ATOMValue(0);
       }
+      if (leftVal.getType() == 'NULL') {
+        return ATOMValue.NULL();
+      }
       if (leftVal.getType() == 'INT' && rightVal.getType() == 'NULL') {
         return new ATOMValue(1/0);
       }
@@ -183,6 +189,9 @@ export default class ATOMOperation {
 
     static ADD = new ATOMOperation(['+'], ATOMOperation.ORDER_ADD, (left, right) => {
       let leftVal = left.eval(), rightVal = right.eval();
+      if (leftVal.getType() == 'NULL' && rightVal.getType() == 'NULL') {
+        return ATOMValue.NULL();
+      }
       if (leftVal.getType() == 'NULL' && rightVal.getType() == 'INT') {
         return new ATOMValue(rightVal.intVal);
       }
@@ -204,8 +213,14 @@ export default class ATOMOperation {
       if (leftVal.getType() == 'STRING') {
         return new ATOMValue(leftVal.strVal + rightVal.toString());
       }
+      if (leftVal.getType() == 'ARRAY' && rightVal.getType() == 'ARRAY') {
+        rightVal.arrVal.forEach(rVal => {
+          leftVal.arrVal.add(rVal);
+        });
+        return leftVal;
+      }
       if (leftVal.getType() == 'ARRAY') {
-        leftVal.arrVal.push(rightVal);
+        leftVal.arrVal.add(rightVal);
         return leftVal;
       }
       throw left + '+' + right;
@@ -228,6 +243,10 @@ export default class ATOMOperation {
       }
       if (leftVal.getType() == 'INT' && rightVal.getType() == 'INT') {
         return new ATOMValue(leftVal.intVal - rightVal.intVal);
+      }
+      if (leftVal.getType() == 'ARRAY' && rightVal.getType() == 'INT') {
+        return leftVal.arrVal.remove(rightVal.intVal);
+        return leftVal;
       }
       throw left + '-' + right;
     });
@@ -271,11 +290,17 @@ export default class ATOMOperation {
       if (leftVal.getType() == 'INT' && rightVal.getType() == 'INT') {
         return new ATOMValue(leftVal.intVal == rightVal.intVal);
       }
+      if (leftVal.getType() == 'STRING' && rightVal.getType() == 'STRING') {
+        return new ATOMValue(leftVal.strVal == rightVal.strVal);
+      }
       throw left + '==' + right;
     });
 
     static NOTEQUAL = new ATOMOperation(['!='], ATOMOperation.ORDER_COMPARE, (left, right) => {
       let leftVal = left.eval(), rightVal = right.eval();
+      if (leftVal.getType() == 'NULL' && rightVal.getType() == 'NULL') {
+        return new ATOMValue(false);
+      }
       if (leftVal.getType() == 'INT' && rightVal.getType() == 'INT') {
         return new ATOMValue(leftVal.intVal != rightVal.intVal);
       }
@@ -374,8 +399,8 @@ export default class ATOMOperation {
     static IN = new ATOMOperation(['IN', '🏠'], ATOMOperation.ORDER_ARRIN, (left, right) => {
       let leftVal = left.eval(), rightVal = right.eval();
       if (rightVal.getType() == 'ARRAY') {
-        for (let i=0;i<rightVal.arrVal.length;i++) {
-          if (leftVal.equals(rightVal.arrVal[i])) {
+        for (let i=0;i<rightVal.arrVal.size();i++) {
+          if (leftVal.equals(rightVal.arrVal.get(i))) {
             return new ATOMValue(true);
           }
         }

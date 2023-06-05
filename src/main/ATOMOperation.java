@@ -83,6 +83,9 @@ public class ATOMOperation extends ATOMElement {
 
     public static ATOMOperation GET_LENGTH = new ATOMOperation(Collections.singletonList("\uD83D\uDCCF"), ORDER_UNARY, (left, right) -> {
         ATOMValue rightVal = right.eval();
+        if (left == null && rightVal.getType() == ATOMValueType.NULL) {
+            return ATOMValue.NULL();
+        }
         if (left == null && rightVal.getType() == ATOMValueType.STRING) {
             return new ATOMValue(rightVal.getStrVal().length());
         }
@@ -174,6 +177,9 @@ public class ATOMOperation extends ATOMElement {
         if (leftVal.getType() == ATOMValueType.NULL && rightVal.getType() == ATOMValueType.INT) {
             return new ATOMValue(0);
         }
+        if (leftVal.getType() == ATOMValueType.NULL) {
+            return ATOMValue.NULL();
+        }
         if (leftVal.getType() == ATOMValueType.INT && rightVal.getType() == ATOMValueType.NULL) {
             return new ATOMValue(1/0);
         }
@@ -198,6 +204,9 @@ public class ATOMOperation extends ATOMElement {
     public static ATOMOperation ADD = new ATOMOperation(Collections.singletonList("+"), ORDER_ADD, (left, right) -> {
         ATOMValue leftVal = left.eval();
         ATOMValue rightVal = right.eval();
+        if (leftVal.getType() == ATOMValueType.NULL && rightVal.getType() == ATOMValueType.NULL) {
+            return ATOMValue.NULL();
+        }
         if (leftVal.getType() == ATOMValueType.NULL && rightVal.getType() == ATOMValueType.INT) {
             return new ATOMValue(rightVal.getIntVal());
         }
@@ -218,6 +227,10 @@ public class ATOMOperation extends ATOMElement {
         }
         if (leftVal.getType() == ATOMValueType.STRING) {
             return new ATOMValue(leftVal.getStrVal() + rightVal.toString());
+        }
+        if (leftVal.getType() == ATOMValueType.ARRAY && rightVal.getType() == ATOMValueType.ARRAY) {
+            rightVal.getArrVal().forEach(rVal -> leftVal.getArrVal().add(rVal));
+            return leftVal;
         }
         if (leftVal.getType() == ATOMValueType.ARRAY) {
             leftVal.getArrVal().add(rightVal);
@@ -242,6 +255,10 @@ public class ATOMOperation extends ATOMElement {
         }
         if (leftVal.getType() == ATOMValueType.INT && rightVal.getType() == ATOMValueType.INT) {
             return new ATOMValue(leftVal.getIntVal() - rightVal.getIntVal());
+        }
+        if (leftVal.getType() == ATOMValueType.ARRAY && rightVal.getType() == ATOMValueType.INT) {
+            leftVal.getArrVal().remove(rightVal.getIntVal());
+            return leftVal;
         }
         throw new ATOMOperationException("-", left, right);
     });
@@ -279,14 +296,23 @@ public class ATOMOperation extends ATOMElement {
     public static ATOMOperation EQUALITY = new ATOMOperation(Collections.singletonList("=="), ORDER_COMPARE, (left, right) -> {
         ATOMValue leftVal = left.eval();
         ATOMValue rightVal = right.eval();
+        if (leftVal.getType() == ATOMValueType.NULL && rightVal.getType() == ATOMValueType.NULL) {
+            return new ATOMValue(true);
+        }
         if (leftVal.getType() == ATOMValueType.INT && rightVal.getType() == ATOMValueType.INT) {
             return new ATOMValue(leftVal.getIntVal() == rightVal.getIntVal());
+        }
+        if (leftVal.getType() == ATOMValueType.STRING && rightVal.getType() == ATOMValueType.STRING) {
+            return new ATOMValue(leftVal.getStrVal().equals(rightVal.getStrVal()));
         }
         throw new ATOMOperationException("==", left, right);
     });
     public static ATOMOperation NOTEQUAL = new ATOMOperation(Collections.singletonList("!="), ORDER_COMPARE, (left, right) -> {
         ATOMValue leftVal = left.eval();
         ATOMValue rightVal = right.eval();
+        if (leftVal.getType() == ATOMValueType.NULL && rightVal.getType() == ATOMValueType.NULL) {
+            return new ATOMValue(false);
+        }
         if (leftVal.getType() == ATOMValueType.INT && rightVal.getType() == ATOMValueType.INT) {
             return new ATOMValue(leftVal.getIntVal() != rightVal.getIntVal());
         }
