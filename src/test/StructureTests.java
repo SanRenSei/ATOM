@@ -72,6 +72,16 @@ public class StructureTests {
     }
 
     @Test
+    public void localVariableTest() {
+        assertEquals(ATOMRuntime.processInput("$n = 5;" +
+                "~{%n = 3; PRINT n};" +
+                "n").compute().getIntVal(), 5);
+        AssertUtil.assertWillPrint(() -> ATOMRuntime.processInput("$n = 5;" +
+                "~{%n = 3; PRINT %n};" +
+                "n"), "3\r\n");
+    }
+
+    @Test
     public void runtimeVarEvalTest() {
         AssertUtil.assertWillPrint(() -> ATOMRuntime.processInput("a=5;" +
                 "b={PRINT a};" +

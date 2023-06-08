@@ -11,6 +11,7 @@ public enum ATOMValueType {
     OBJECT,
 
     SCOPED,
+    LOCAL,
     INDEXED,
     GLOBAL;
 

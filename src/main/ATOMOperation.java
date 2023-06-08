@@ -31,7 +31,7 @@ public class ATOMOperation extends ATOMElement {
     public static ATOMOperation DEREFERENCE = new ATOMOperation(Collections.singletonList("."), ORDER_DEREF, (left, right) -> {
         ATOMValue rightVal = right.eval();
         if (rightVal.getType() == ATOMValueType.STRING && left.parent!=null) {
-            ATOMValue potentialVar = left.parent.getLocalVar(rightVal.getStrVal());
+            ATOMValue potentialVar = left.parent.getScopedVar(rightVal.getStrVal());
             if (!potentialVar.equals(ATOMValue.NULL())) {
                 rightVal = potentialVar;
             }
@@ -366,7 +366,7 @@ public class ATOMOperation extends ATOMElement {
         if (rightVal.getType() == ATOMValueType.OBJECT) {
             ATOMScope rightValObj = rightVal.getObjVal();
             if (left instanceof ATOMValueDynamic) {
-                rightValObj.localVars.put(((ATOMValueDynamic) left).name, rightValObj.getLocalVar(((ATOMValueDynamic) left).name).compute());
+                rightValObj.localVars.put(((ATOMValueDynamic) left).name, rightValObj.getScopedVar(((ATOMValueDynamic) left).name).compute());
                 return rightVal;
             }
             if (leftVal.getType() == ATOMValueType.OBJECT) {

@@ -15,12 +15,12 @@ public class ATOMValueDynamic extends ATOMValue {
     }
 
     public ATOMValueDynamic(String name, boolean isGlobal) {
+        this(name, isGlobal?ATOMValueType.GLOBAL:ATOMValueType.SCOPED);
+    }
+
+    public ATOMValueDynamic(String name, ATOMValueType type) {
         this.name = name;
-        if (isGlobal) {
-            this.setType(ATOMValueType.GLOBAL);
-        } else {
-            this.setType(ATOMValueType.SCOPED);
-        }
+        this.setType(type);
     }
 
     public ATOMValueDynamic(int index) {
@@ -56,6 +56,9 @@ public class ATOMValueDynamic extends ATOMValue {
                 return ATOMRuntime.getIndexedVar(index);
             }
             if (getType() == ATOMValueType.SCOPED) {
+                return parent.getScopedVar(name);
+            }
+            if (getType() == ATOMValueType.LOCAL) {
                 return parent.getLocalVar(name);
             }
             if (getType() == ATOMValueType.GLOBAL) {
@@ -110,10 +113,13 @@ public class ATOMValueDynamic extends ATOMValue {
                 throw new RuntimeException("Setting indexed var not yet supported.");
             }
             if (getType() == ATOMValueType.SCOPED) {
-                parent.setLocalVar(name, val);
+                parent.setScopedVar(name, val);
             }
             if (getType() == ATOMValueType.GLOBAL) {
                 ATOMRuntime.injectVariable(this.name, val);
+            }
+            if (getType() == ATOMValueType.LOCAL) {
+                parent.setLocalVar(name, val);
             }
             return;
         }
@@ -145,7 +151,13 @@ public class ATOMValueDynamic extends ATOMValue {
         if (this.getType() == ATOMValueType.INDEXED) {
             return prefix + "$" + index;
         }
-        return prefix + "$" + name;
+        if (this.getType() == ATOMValueType.LOCAL) {
+            return prefix + "%" + name;
+        }
+        if (this.getType() == ATOMValueType.GLOBAL) {
+            return prefix + "$" + name;
+        }
+        return prefix + "?" + name;
     }
 
 }

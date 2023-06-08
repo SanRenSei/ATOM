@@ -62,6 +62,24 @@ public class ATOMScope extends ATOMElement {
                     elem.parent = this;
                 }
             }
+            if (elem==ATOMOperation.MODULO) {
+                // % can either be modulus or local var depending on context of prior element
+
+                List<ATOMElement> currentCommand = latestExpression.children;
+                if (currentCommand.size()==0) {
+                    // If % comes first then that means its local var
+                    // The next child should be a dynamic, so set its type to local
+                    // Avoid adding the modulus operator to the expression
+                    ((ATOMValueDynamic)children.get(0)).setType(ATOMValueType.LOCAL);
+                    continue;
+                }
+                else if (currentCommand.get(currentCommand.size()-1) instanceof ATOMOperation) {
+                    // If * comes right after an operation, then its a local var
+                    ((ATOMValueDynamic)children.get(0)).setType(ATOMValueType.LOCAL);
+                    continue;
+                }
+            }
+
 
             if (type == ATOMScopeType.OBJECT) {
                 if (elem == ATOMOperation.END_STATEMENT) {
@@ -200,6 +218,13 @@ public class ATOMScope extends ATOMElement {
     }
 
     public ATOMValue getLocalVar(String name) {
+        if (localVars.get(name)!=null) {
+            return localVars.get(name);
+        }
+        return ATOMValue.NULL();
+    }
+
+    public ATOMValue getScopedVar(String name) {
         ATOMScope pathToRoot = this;
         while (pathToRoot!=null) {
             if (pathToRoot.localVars.get(name)!=null) {
@@ -214,6 +239,10 @@ public class ATOMScope extends ATOMElement {
     }
 
     public void setLocalVar(String name, ATOMValue val) {
+        localVars.put(name, val);
+    }
+
+    public void setScopedVar(String name, ATOMValue val) {
         ATOMScope pathToRoot = this;
         while (pathToRoot!=null) {
             if (pathToRoot.localVars.get(name)!=null) {
