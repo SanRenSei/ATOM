@@ -222,6 +222,12 @@ public class ATOMOperation extends ATOMElement {
         if (leftVal.getType() == ATOMValueType.INT && rightVal.getType() == ATOMValueType.INT) {
             return new ATOMValue(leftVal.getIntVal() + rightVal.getIntVal());
         }
+        if (leftVal.getType() == ATOMValueType.INT && rightVal.getType() == ATOMValueType.STRING) {
+            return new ATOMValue(leftVal.getIntVal() + rightVal.getStrVal());
+        }
+        if (leftVal.getType() == ATOMValueType.STRING && rightVal.getType() == ATOMValueType.INT) {
+            return new ATOMValue(leftVal.getStrVal() + rightVal.getIntVal());
+        }
         if (leftVal.getType() == ATOMValueType.STRING && rightVal.getType() == ATOMValueType.STRING) {
             return new ATOMValue(leftVal.getStrVal() + rightVal.getStrVal());
         }

@@ -65,7 +65,9 @@ public abstract class ATOMElement {
                 }
             }
             template.currentIndex = endIndex+1;
-            return new ATOMValue(template.source.substring(startIndex+1, endIndex).replaceAll("\\\\\"", "\""));
+            return new ATOMValue(template.source.substring(startIndex+1, endIndex)
+                    .replaceAll("\\\\\"", "\"")
+                    .replaceAll("\\\\n", "\n"));
         }
         if (c=='$') {
             int startIndex = template.currentIndex+1;
