@@ -39,7 +39,7 @@ export default class ATOMElement {
         }
       }
       atomTemplate.currentIndex = endIndex+1;
-      return new ATOMValue(atomTemplate.source.substring(startIndex+1, endIndex).replace(/\\"/g, '"'));
+      return new ATOMValue(atomTemplate.source.substring(startIndex+1, endIndex).replace(/\\"/g, '"').replace(/\\\\n/g, '\n'));
     }
     if (c=='$') {
       let startIndex = atomTemplate.currentIndex+1;

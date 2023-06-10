@@ -171,7 +171,7 @@ export default class ATOMOperation {
         return new ATOMValue(1/0);
       }
       if (leftVal.getType() == 'INT' && rightVal.getType() == 'INT') {
-        return new ATOMValue(leftVal.intVal / rightVal.intVal);
+        return new ATOMValue(Math.floor(leftVal.intVal / rightVal.intVal));
       }
       if (leftVal.getType() == 'STRING' && rightVal.getType() == 'STRING') {
         return new ATOMValue(leftVal.strVal.split(rightVal.strVal).map(s => new ATOMValue(s)));
@@ -206,6 +206,12 @@ export default class ATOMOperation {
       }
       if (leftVal.getType() == 'INT' && rightVal.getType() == 'INT') {
         return new ATOMValue(leftVal.intVal + rightVal.intVal);
+      }
+      if (leftVal.getType() == 'INT' && rightVal.getType() == 'STRING') {
+        return new ATOMValue(leftVal.intVal + rightVal.strVal);
+      }
+      if (leftVal.getType() == 'STRING' && rightVal.getType() == 'INT') {
+        return new ATOMValue(leftVal.strVal + rightVal.intVal);
       }
       if (leftVal.getType() == 'STRING' && rightVal.getType() == 'STRING') {
         return new ATOMValue(leftVal.strVal + rightVal.strVal);
@@ -435,8 +441,8 @@ export default class ATOMOperation {
     static FOREACH = new ATOMOperation(['FOREACH', '∀'], ATOMOperation.ORDER_FUNC, (left, right) => {
       let leftVal = left.eval();
       if (leftVal.getType() == 'ARRAY' && right instanceof ATOMScope) {
-        for (let i=0;i<leftVal.arrVal.length;i++) {
-          let iterator = leftVal.arrVal[i];
+        for (let i=0;i<leftVal.arrVal.size();i++) {
+          let iterator = leftVal.arrVal.get(i);
           ATOMRuntime.pushIndexedVar(iterator.eval());
           right.compute();
           ATOMRuntime.popIndexedVar();
@@ -675,3 +681,5 @@ export default class ATOMOperation {
     }
 
 }
+
+
