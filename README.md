@@ -1,12 +1,18 @@
 # ATOM
 
-**ATOM** is a modern programming language that not only embraces the art of concise code but also strives to be an exceptionally practical language in the realm of everyday programming. Unlike the run-of-the-mill code golf languages, ATOM goes above and beyond, extending its capabilities to even run web servers. Building upon JavaScript's prowess in inferred type casting, ATOM elevates it to unimaginable heights by preemptively understanding the user's deepest intentions.
+**ATOM** is a modern programming language that not only embraces the art of concise code but also can be used in the realm of everyday programming, including scripting, servers, web applications, data mining, and more.  It takes influences from a wide variety of successful languages including Javascript, SQL, Perl, and of course, APL.  ATOM, above all, strives to serve the niche of Mobile Application Development.
 
-Forget about convoluted string splitting operations – in ATOM, it's as effortless as performing a division. Need to add a number to a null type? No problemo! ATOM will graciously cast that null to a 0 and hand back your precious original number. Convenience? Oh, ATOM has mastered it to perfection.
+To optimize the Mobile Application Development experience, ATOM adheres to specific design principles that address the unique characteristics of mobile devices and how end users interact with them. Some key considerations include:
 
-And hold your breath, because if you're already acquainted with the sheer brilliance of JavaScript, ATOM will make you feel right at home. It's like finding a long-lost soulmate in the realm of programming languages.
+ - Device screen size: Mobile screens are relatively small, making it challenging to display large amounts of information.
 
-To emphasize its modernity, ATOM wholeheartedly embraces the contemporary keyboard, providing programmers with unparalleled flexibility with its limitless possibilities. We highly recommend familiarizing yourself with the emoji alphabet to unlock the full potential of this groundbreaking language.
+ - Window switching: Unlike computer users who can easily switch between windows with Alt+Tab, mobile users face a more cumbersome process.
+
+ - Keyboard differences: Mobile applications benefit from international and emoji keyboards, offering users greater flexibility in typing compared to traditional computer keyboards.
+
+ATOM tackles these challenges through deliberate design choices. It employs conciseness to ensure more code can fit on the screen, rethinks how functions operate to reduce the need for developers to constantly switch between documentation pages, and supports emojis, enabling engineers to leverage the full potential of modern mobile keyboards.
+
+As the first ever language specifically designed to allow engineers to comfortably write code from their phones, ATOM seeks to bring about a paradigm shift centered on Mobile Application Development.
 
 ## Usage
 
@@ -39,5 +45,6 @@ Years later, our resilient engineer, armed with newfound wisdom, decided to lear
 ## Links
 
 - [Assorted Code Samples](https://github.com/SanRenSei/ATOM/tree/main/samples/assorted)
+- [Introduction to Syntax](https://github.com/SanRenSei/ATOM/blob/main/docs/Runtime.md)
 - [Information on Operations](https://github.com/SanRenSei/ATOM/blob/main/docs/Operations.md)
 - [Online Interpreter - WORK IN PROGRESS](https://sanrensei.github.io/ATOM/)
