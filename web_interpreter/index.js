@@ -9,7 +9,7 @@ runButton.onclick = () => {
   window.atomBeginTime = new Date().getTime();
   window.atomTimeout = 5000;
   console.log = (str) => {
-    outputConsole.innerHTML = outputConsole.innerHTML + '\n' + str;
+    outputConsole.innerHTML = outputConsole.innerHTML + '\n' + str.replace(/\\n/g, '\n');
   }
   outputConsole.innerHTML = '';
   ATOMRuntime.reset();
