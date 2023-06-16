@@ -15,7 +15,8 @@ public class ATOMOperation extends ATOMElement {
     public static int ORDER_DEREF = 1;
     public static int ORDER_UNARY = ORDER_DEREF+1;
     public static int ORDER_ARRGEN = ORDER_UNARY+1;
-    public static int ORDER_MULT = ORDER_ARRGEN+1;
+    public static int ORDER_EXPONENT = ORDER_ARRGEN+1;
+    public static int ORDER_MULT = ORDER_EXPONENT+1;
     public static int ORDER_ADD = ORDER_MULT+1;
     public static int ORDER_MINMAX = ORDER_ADD+1;
     public static int ORDER_COMPARE = ORDER_MINMAX+1;
@@ -157,6 +158,21 @@ public class ATOMOperation extends ATOMElement {
     public static ATOMOperation NEGATE = new ATOMOperation(Collections.singletonList("!"), ORDER_MULT,
             (left, right) -> new ATOMValue(!right.eval().isTruthy()));
 
+    public static ATOMOperation EXPONENT = new ATOMOperation(Collections.singletonList("^"), ORDER_EXPONENT, (left, right) -> {
+        ATOMValue leftVal = left.eval();
+        ATOMValue rightVal = right.eval();
+        if (leftVal.getType() == ATOMValueType.NULL && rightVal.getType() == ATOMValueType.INT) {
+            return new ATOMValue(0);
+        }
+        if (leftVal.getType() == ATOMValueType.INT && rightVal.getType() == ATOMValueType.NULL) {
+            return new ATOMValue(1);
+        }
+        if (leftVal.getType() == ATOMValueType.INT && rightVal.getType() == ATOMValueType.INT) {
+            return new ATOMValue((int) Math.pow(leftVal.getIntVal(), rightVal.getIntVal()));
+        }
+        throw new ATOMOperationException("^", left, right);
+    });
+
     public static ATOMOperation MULTIPLY = new ATOMOperation(Collections.singletonList("*"), ORDER_MULT, (left, right) -> {
         ATOMValue leftVal = left.eval();
         ATOMValue rightVal = right.eval();
@@ -171,6 +187,7 @@ public class ATOMOperation extends ATOMElement {
         }
         throw new ATOMOperationException("*", left, right);
     });
+
     public static ATOMOperation DIVISION = new ATOMOperation(Collections.singletonList("/"), ORDER_MULT, (left, right) -> {
         ATOMValue leftVal = left.eval();
         ATOMValue rightVal = right.eval();
@@ -249,6 +266,9 @@ public class ATOMOperation extends ATOMElement {
         if (left == null) {
             if (rightVal.getType() == ATOMValueType.INT) {
                 return new ATOMValue(-rightVal.getIntVal());
+            }
+            if (rightVal.getType() == ATOMValueType.STRING) {
+                return new ATOMValue(new StringBuilder(rightVal.getStrVal()).reverse().toString());
             }
             throw new ATOMOperationException("-", left, right);
         }
@@ -653,6 +673,7 @@ public class ATOMOperation extends ATOMElement {
             SUBTRACT, // -
             MULTIPLY, // *
             DIVISION, // /
+            EXPONENT, // ^
             MODULO, // %
             MAXIMUM, // ><
             MINIMUM, // <>

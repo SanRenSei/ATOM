@@ -48,12 +48,23 @@ public class OperatorTests {
     }
 
     @Test
+    public void exponentTest() {
+        assertEquals(ATOMRuntime.processInput("2^3").compute().getIntVal(), 8);
+        assertEquals(ATOMRuntime.processInput("3^2").compute().getIntVal(), 9);
+    }
+
+    @Test
     public void stringSplitTest() {
         assertTrue(ATOMValue.listEquals(ATOMRuntime.processInput("\"a b c\"/\" \"").getArrVal().toList(), Arrays.asList(
                 new ATOMValue("a"),
                 new ATOMValue("b"),
                 new ATOMValue("c")
         )));
+    }
+
+    @Test
+    public void stringReverseTest() {
+        assertEquals(ATOMRuntime.processInput("-\"apples\"").compute().getStrVal(), "selppa");
     }
 
     @Test
