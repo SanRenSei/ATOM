@@ -34,7 +34,7 @@ public class ATOMExpression extends ATOMElement {
         );
         for (int i=0;i<children.size();i++) {
             if (implicitScopeOperations.contains(children.get(i))) {
-                if (i == children.size()-2 && children.get(children.size()-1) instanceof ATOMScope) {
+                if (children.get(i+1) instanceof ATOMScope) {
                     return;
                 }
                 ATOMScope subScope = new ATOMScope();

@@ -30,7 +30,7 @@ export default class ATOMExpression {
     ];
     for (let i=0;i<this.children.length;i++) {
       if (implicitScopeOperations.indexOf(this.children[i])>=0) {
-        if (i == this.children.length-2 && this.children[this.children.length-1] instanceof ATOMScope) {
+        if (this.children[i+1] instanceof ATOMScope) {
           return;
         }
         let subScope = new ATOMScope();

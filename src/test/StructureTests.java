@@ -1,10 +1,14 @@
 package test;
 
+import main.ATOMElement;
 import main.ATOMRuntime;
 import main.ATOMValue;
 import main.ATOMValueType;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 import test.util.AssertUtil;
+
+import java.util.Arrays;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
@@ -69,6 +73,13 @@ public class StructureTests {
         assertEquals(ATOMRuntime.processInput("sum = 0;" +
                 "[1,2,3] FOREACH sum = sum+*;" +
                 "sum").compute().getIntVal(), 6);
+    }
+
+    @Test
+    public void nonImplicitScopingTest() {
+        Assert.assertEquals(ATOMRuntime.processInput("0~4 MAP {*+1} MAP {**2}").getArrVal()
+                .map(ATOMElement::eval)
+                .map(ATOMValue::getIntVal).toList(), Arrays.asList(2, 4, 6, 8, 10));
     }
 
     @Test
