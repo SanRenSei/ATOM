@@ -13,21 +13,21 @@ public class HttpServer extends ATOMScope {
 
     private ATOMValue isGet = new ATOMValue(new ATOMScope(){
         public ATOMValue compute() {
-            ATOMScope request = ATOMRuntime.getIndexedVar(0).getObjVal();
+            ATOMScope request = getIndexedVar(0).getObjVal();
             return new ATOMValue(request.dereference(new ATOMValue("method")).getStrVal().equals("GET"));
         }
     });
 
     private ATOMValue isPost = new ATOMValue(new ATOMScope(){
         public ATOMValue compute() {
-            ATOMScope request = ATOMRuntime.getIndexedVar(0).getObjVal();
+            ATOMScope request = getIndexedVar(0).getObjVal();
             return new ATOMValue(request.dereference(new ATOMValue("method")).getStrVal().equals("POST"));
         }
     });
 
     public ATOMValue compute() {
         try {
-            ATOMScope routes = ATOMRuntime.getIndexedVar(0).getObjVal();
+            ATOMScope routes = getIndexedVar(0).getObjVal();
             com.sun.net.httpserver.HttpServer server = com.sun.net.httpserver.HttpServer.create(new InetSocketAddress(9090), 0);
             server.createContext("/", new HttpHandlerImpl(routes));
             server.setExecutor(null); // creates a default executor
@@ -74,7 +74,7 @@ public class HttpServer extends ATOMScope {
                         response = val.getStrVal();
                         break;
                     } else if (val.getType() == ATOMValueType.OBJECT) {
-                        val = ATOMOperation.INTO.operate.apply(
+                        val = ATOMOperation.INTO.operate.execute(null,
                                 new RequestObject(t.getRequestMethod(), getRequestBody(t.getRequestBody()))
                                         .withQueryString(queries),
                                 val.getObjVal());

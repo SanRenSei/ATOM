@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -440,10 +439,10 @@ public class ATOMOperation extends ATOMElement {
         throw new ATOMOperationException("ASSIGNMENT", left, right);
     });
 
-    public static ATOMOperation S_SEPERATOR = new ATOMOperation(Collections.singletonList(","), ORDER_SEP, null);
-    public static ATOMOperation P_SEPERATOR = new ATOMOperation(Collections.singletonList(":"), ORDER_SEP, null);
+    public static ATOMOperation S_SEPERATOR = new ATOMOperation(Collections.singletonList(","), ORDER_SEP, (TriFunction) null);
+    public static ATOMOperation P_SEPERATOR = new ATOMOperation(Collections.singletonList(":"), ORDER_SEP, (TriFunction) null);
 
-    public static ATOMOperation END_STATEMENT = new ATOMOperation(Collections.singletonList(";"), ORDER_SEP, null);
+    public static ATOMOperation END_STATEMENT = new ATOMOperation(Collections.singletonList(";"), ORDER_SEP, (TriFunction) null);
 
     public static ATOMOperation PRINT = new ATOMOperation(Arrays.asList("PRINT", "🖨"), ORDER_PRINT, (left, right) -> {
         ATOMValue rightVal = right.eval();
@@ -479,40 +478,40 @@ public class ATOMOperation extends ATOMElement {
         throw new ATOMOperationException("NOTIN", left, right);
     });
 
-    public static ATOMOperation INTO = new ATOMOperation(Arrays.asList("INTO", "\uD83D\uDEAA"), ORDER_FUNC, (left, right) -> {
-        if (right instanceof ATOMScope) {
-            ATOMRuntime.pushIndexedVar(left.eval());
-            ATOMValue toReturn = right.compute();
-            ATOMRuntime.popIndexedVar();
+    public static ATOMOperation INTO = new ATOMOperation(Arrays.asList("INTO", "\uD83D\uDEAA"), ORDER_FUNC, (scope, left, right) -> {
+        if (right.eval().getType()==ATOMValueType.OBJECT) {
+            ATOMScope rightScope = right.eval().getObjVal();
+            if (rightScope.parent==null) {
+                rightScope.parent = scope;
+            }
+            rightScope.indexedVar = left.eval();
+            ATOMValue toReturn = rightScope.compute();
             return toReturn;
         }
-        throw new RuntimeException("BAD TYPING INSIDE INTO");
+        throw new ATOMOperationException("INTO", left, right);
     });
     public static ATOMOperation FOREACH = new ATOMOperation(Arrays.asList("FOREACH", "∀"), ORDER_FUNC, (left, right) -> {
         ATOMValue leftVal = left.eval();
         if (leftVal.getType() == ATOMValueType.ARRAY && right instanceof ATOMScope) {
             for (int i=0;i<leftVal.getArrVal().size();i++) {
                 ATOMElement iterator = leftVal.getArrVal().get(i);
-                ATOMRuntime.pushIndexedVar(iterator.eval());
+                ((ATOMScope) right).indexedVar = iterator.eval();
                 right.compute();
-                ATOMRuntime.popIndexedVar();
             }
             return null;
         }
         if (leftVal.getType() == ATOMValueType.STRING && right instanceof ATOMScope) {
             for (int i=0;i<leftVal.getStrVal().length();i++) {
                 ATOMElement iterator = new ATOMValue(""+leftVal.getStrVal().charAt(i));
-                ATOMRuntime.pushIndexedVar(iterator.eval());
+                ((ATOMScope) right).indexedVar = iterator.eval();
                 right.compute();
-                ATOMRuntime.popIndexedVar();
             }
             return null;
         }
         if (leftVal.getType() == ATOMValueType.INT && right instanceof ATOMScope) {
             for (int i=0;i<leftVal.getIntVal();i++) {
-                ATOMRuntime.pushIndexedVar(new ATOMValue(i));
+                ((ATOMScope) right).indexedVar = new ATOMValue(i);
                 right.compute();
-                ATOMRuntime.popIndexedVar();
             }
             return null;
         }
@@ -528,9 +527,8 @@ public class ATOMOperation extends ATOMElement {
         ATOMValue leftVal = left.eval();
         if (leftVal.getType() == ATOMValueType.ARRAY && right instanceof ATOMScope) {
             for (int i=0;i<leftVal.getArrVal().size();i++) {
-                ATOMRuntime.pushIndexedVar(new ATOMValue(i));
+                ((ATOMScope) right).indexedVar = new ATOMValue(i);
                 right.compute();
-                ATOMRuntime.popIndexedVar();
             }
             return ATOMValue.NULL();
         }
@@ -543,9 +541,8 @@ public class ATOMOperation extends ATOMElement {
             List<ATOMValue> mappedVals = new ArrayList<>();
             for (int i=0;i< leftVal.getArrVal().size();i++) {
                 ATOMElement iterator = leftVal.getArrVal().get(i);
-                ATOMRuntime.pushIndexedVar(iterator.eval());
+                ((ATOMScope) right).indexedVar = iterator.eval();
                 mappedVals.add(right.compute());
-                ATOMRuntime.popIndexedVar();
             }
             return new ATOMValue(mappedVals);
         }
@@ -558,9 +555,8 @@ public class ATOMOperation extends ATOMElement {
             List<ATOMValue> mappedVals = new ArrayList<>();
             for (int i=0;i< leftVal.getArrVal().size();i++) {
                 ATOMValue iterator = new ATOMValue(i);
-                ATOMRuntime.pushIndexedVar(iterator.eval());
+                ((ATOMScope) right).indexedVar = iterator.eval();
                 mappedVals.add(right.compute());
-                ATOMRuntime.popIndexedVar();
             }
             return new ATOMValue(mappedVals);
         }
@@ -573,12 +569,11 @@ public class ATOMOperation extends ATOMElement {
             List<ATOMValue> filteredVals = new ArrayList<>();
             for (int i=0;i< leftVal.getArrVal().size();i++) {
                 ATOMValue iterator = leftVal.getArrVal().get(i);
-                ATOMRuntime.pushIndexedVar(iterator.eval());
+                ((ATOMScope) right).indexedVar = iterator.eval();
                 ATOMValue filterVal = right.compute();
                 if (filterVal.isTruthy()) {
                     filteredVals.add(iterator);
                 }
-                ATOMRuntime.popIndexedVar();
             }
             return new ATOMValue(filteredVals);
         }
@@ -590,12 +585,11 @@ public class ATOMOperation extends ATOMElement {
             List<ATOMValue> filteredVals = new ArrayList<>();
             for (int i=0;i< leftVal.getArrVal().size();i++) {
                 ATOMValue iterator = new ATOMValue(i);
-                ATOMRuntime.pushIndexedVar(iterator.eval());
+                ((ATOMScope) right).indexedVar = iterator.eval();
                 ATOMValue filterVal = right.compute();
                 if (filterVal.isTruthy()) {
                     filteredVals.add(iterator);
                 }
-                ATOMRuntime.popIndexedVar();
             }
             return new ATOMValue(filteredVals);
         }
@@ -605,9 +599,8 @@ public class ATOMOperation extends ATOMElement {
         ATOMValue leftVal = left.eval();
         if (right instanceof ATOMScope) {
             while (leftVal.isTruthy()) {
-                ATOMRuntime.pushIndexedVar(leftVal);
+                ((ATOMScope) right).indexedVar = leftVal;
                 leftVal = right.compute();
-                ATOMRuntime.popIndexedVar();
             }
             return leftVal;
         }
@@ -640,22 +633,22 @@ public class ATOMOperation extends ATOMElement {
     });
 
     public static ATOMOperation PLUS_EQUALS = new ATOMOperation(Collections.singletonList("+="), ORDER_OPASSIGN,
-            (left, right) -> ASSIGNMENT.operate.apply(left, ADD.operate.apply(left, right)));
+            (scope, left, right) -> ASSIGNMENT.operate.execute(scope, left, ADD.operate.execute(scope, left, right)));
 
     public static ATOMOperation MINUS_EQUALS = new ATOMOperation(Collections.singletonList("-="), ORDER_OPASSIGN,
-            (left, right) -> ASSIGNMENT.operate.apply(left, SUBTRACT.operate.apply(left, right)));
+            (scope, left, right) -> ASSIGNMENT.operate.execute(scope, left, SUBTRACT.operate.execute(scope, left, right)));
 
     public static ATOMOperation TIMES_EQUALS = new ATOMOperation(Collections.singletonList("*="), ORDER_OPASSIGN,
-            (left, right) -> ASSIGNMENT.operate.apply(left, MULTIPLY.operate.apply(left, right)));
+            (scope, left, right) -> ASSIGNMENT.operate.execute(scope, left, MULTIPLY.operate.execute(scope, left, right)));
 
     public static ATOMOperation DIVIDE_EQUALS = new ATOMOperation(Collections.singletonList("/="), ORDER_OPASSIGN,
-            (left, right) -> ASSIGNMENT.operate.apply(left, DIVISION.operate.apply(left, right)));
+            (scope, left, right) -> ASSIGNMENT.operate.execute(scope, left, DIVISION.operate.execute(scope, left, right)));
 
     public static ATOMOperation MAX_EQUALS = new ATOMOperation(Collections.singletonList("><="), ORDER_OPASSIGN,
-            (left, right) -> ASSIGNMENT.operate.apply(left, MAXIMUM.operate.apply(left, right)));
+            (scope, left, right) -> ASSIGNMENT.operate.execute(scope, left, MAXIMUM.operate.execute(scope, left, right)));
 
     public static ATOMOperation MIN_EQUALS = new ATOMOperation(Collections.singletonList("<>="), ORDER_OPASSIGN,
-            (left, right) -> ASSIGNMENT.operate.apply(left, MINIMUM.operate.apply(left, right)));
+            (scope, left, right) -> ASSIGNMENT.operate.execute(scope, left, MINIMUM.operate.execute(scope, left, right)));
 
     public static ATOMOperation[] operations = {
             EQUALITY, // ==
@@ -709,12 +702,18 @@ public class ATOMOperation extends ATOMElement {
 
     List<String> commands;
     int order;
-    public final BiFunction<ATOMElement, ATOMElement, ATOMValue> operate;
+    public final TriFunction operate;
 
     ATOMOperation(List<String> commands, int order, BiFunction<ATOMElement, ATOMElement, ATOMValue> operate) {
         this.commands = commands;
         this.order = order;
-        this.operate = operate;
+        this.operate = (scope, left, right) -> operate.apply(left,right);
+    }
+
+    ATOMOperation(List<String> commands, int order, TriFunction operate2) {
+        this.commands = commands;
+        this.order = order;
+        this.operate = operate2;
     }
 
     public ATOMValue eval() {
@@ -725,11 +724,11 @@ public class ATOMOperation extends ATOMElement {
         throw new RuntimeException("Operations cannot be computed to a value");
     }
 
-    public ATOMValue eval(ATOMElement left, ATOMElement right) {
-        if (operate==null) {
+    public ATOMValue eval(ATOMScope scope, ATOMElement left, ATOMElement right) {
+        if (operate ==null) {
             throw new RuntimeException("Must implement operate for "+this);
         }
-        return operate.apply(left, right);
+        return operate.execute(scope, left, right);
     }
 
     public String toString() {

@@ -17,7 +17,7 @@ public class FileSystem extends ATOMScope {
     private ATOMValue reader = new ATOMValue(new ATOMScope(){
         public ATOMValue compute() {
             try {
-                String filePath = ATOMRuntime.getIndexedVar(0).getStrVal();
+                String filePath = getIndexedVar(0).getStrVal();
                 File f = new File(filePath);
                 if (!f.exists()) {
                     return ATOMValue.NULL();
@@ -41,7 +41,7 @@ public class FileSystem extends ATOMScope {
     private ATOMValue writer = new ATOMValue(new ATOMScope(){
         public ATOMValue compute() {
             try {
-                ATOMScope obj = ATOMRuntime.getIndexedVar(0).getObjVal();
+                ATOMScope obj = getIndexedVar(0).getObjVal();
                 String filePath = obj.dereference(new ATOMValue("path")).getStrVal();
                 String fileContent = obj.dereference(new ATOMValue("content")).getStrVal();
                 BufferedWriter out = new BufferedWriter(new FileWriter(new File(filePath)));

@@ -38,7 +38,6 @@ public class ATOMExpression extends ATOMElement {
                     return;
                 }
                 ATOMScope subScope = new ATOMScope();
-                subScope.type = ATOMScopeType.PARENTHESIS;
                 subScope.parent = parent;
                 List<ATOMElement> implicitScope = new ArrayList<>();
                 while (children.size()>i+1) {
@@ -106,7 +105,7 @@ public class ATOMExpression extends ATOMElement {
                 left = copyOfChildren.get(nextOperationIndex-1);
                 copyOfChildren.remove(nextOperationIndex-1);
             }
-            ATOMValue newVal = op.eval(left, right);
+            ATOMValue newVal = op.eval(this.parent, left, right);
             if (left == null) {
                 copyOfChildren.add(nextOperationIndex, newVal);
             } else {

@@ -53,7 +53,7 @@ public class ATOMValueDynamic extends ATOMValue {
     public ATOMValue getVal() {
         if (rootPath == null) {
             if (getType() == ATOMValueType.INDEXED) {
-                return ATOMRuntime.getIndexedVar(index);
+                return this.parent.getIndexedVar(index);
             }
             if (getType() == ATOMValueType.SCOPED) {
                 return parent.getScopedVar(name);

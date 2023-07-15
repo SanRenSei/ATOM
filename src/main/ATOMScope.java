@@ -13,9 +13,12 @@ public class ATOMScope extends ATOMElement {
     List<ATOMExpression> components = new ArrayList<>(); // Parenthesis and arrays use components
     List<List<ATOMExpression>[]> branches = new ArrayList<>(); // Objects use branches
 
+    ATOMValue indexedVar = null;
+
     public HashMap<String, ATOMValue> localVars = new HashMap<>();
 
     public ATOMScope() {
+        this.type = ATOMScopeType.PARENTHESIS;
     }
 
     public ATOMScope(ATOMScopeType type) {
@@ -195,7 +198,7 @@ public class ATOMScope extends ATOMElement {
             throw new RuntimeException("Something went wrong with ATOMScopeType in derefernce");
         }
 
-        ATOMRuntime.pushIndexedVar(key);
+        this.indexedVar = key;
         ATOMValue predicate = null;
         for (List<ATOMExpression>[] branch : branches) {
             for (int i = 0; i < branch[0].size(); i++) {
@@ -203,17 +206,14 @@ public class ATOMScope extends ATOMElement {
             }
             if (predicate.equals(key)) {
                 if (branch[1].size()==0) {
-                    ATOMRuntime.popIndexedVar();
                     return ATOMValue.NULL();
                 }
                 for (int i = 0; i < branch[1].size(); i++) {
                     predicate = branch[1].get(i).eval();
                 }
-                ATOMRuntime.popIndexedVar();
                 return predicate;
             }
         }
-        ATOMRuntime.popIndexedVar();
         return ATOMValue.NULL();
     }
 
@@ -236,6 +236,17 @@ public class ATOMScope extends ATOMElement {
             return ATOMRuntime.globalVars.get(name);
         }
         return ATOMValue.NULL();
+    }
+
+    public ATOMValue getIndexedVar(int index) {
+        ATOMScope parentChain = this;
+        while (index>0 || parentChain.indexedVar==null) {
+            if (parentChain.indexedVar!=null) {
+                index--;
+            }
+            parentChain = parentChain.parent;
+        }
+        return parentChain.indexedVar;
     }
 
     public void setLocalVar(String name, ATOMValue val) {
