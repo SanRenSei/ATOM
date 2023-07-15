@@ -116,4 +116,17 @@ public class StructureTests {
                 "~b"), "5\r\n");
     }
 
+    @Test()
+    public void scopeParentTest() {
+        assertEquals(ATOMRuntime.processInput("$a = 5;" +
+                "b = {a+=1};" +
+                "c = {" +
+                "%a=3;" +
+                "~b;" +
+                "};" +
+                "~c;" +
+                "a"
+        ).compute().getIntVal(), 6);
+    }
+
 }
